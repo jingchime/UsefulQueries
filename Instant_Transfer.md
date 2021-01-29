@@ -1,6 +1,7 @@
 # Instant transfer queries from looker dashboard
 
-// All time users
+## All time users
+```
 WITH instant_transfers AS (select id, user_id, transaction_code, transaction_timestamp, transaction_amount
           from ANALYTICS.LOOKER."TRANSACTIONS" transactions
           where transaction_code in ('PMDB', 'PMTP', 'ADac', 'ADAS', 'ADTR', 'ADar')
@@ -13,6 +14,7 @@ LEFT JOIN instant_transfers ON (members."ID") = instant_transfers.user_id
 WHERE
 	(instant_transfers.transaction_timestamp  >= TO_TIMESTAMP('2020-10-22'))
 LIMIT 500;
+```
 
 // All time volume
 WITH instant_transfers AS (select id, user_id, transaction_code, transaction_timestamp, transaction_amount
