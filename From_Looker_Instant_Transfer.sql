@@ -1,7 +1,7 @@
 # Instant transfer queries from looker dashboard
 
 ## All time users
-```
+
 WITH instant_transfers AS (select id, user_id, transaction_code, transaction_timestamp, transaction_amount
           from ANALYTICS.LOOKER."TRANSACTIONS" transactions
           where transaction_code in ('PMDB', 'PMTP', 'ADac', 'ADAS', 'ADTR', 'ADar')
@@ -14,10 +14,10 @@ LEFT JOIN instant_transfers ON (members."ID") = instant_transfers.user_id
 WHERE
 	(instant_transfers.transaction_timestamp  >= TO_TIMESTAMP('2020-10-22'))
 LIMIT 500;
-```
+
 
 ## All time volume
-```
+
 WITH instant_transfers AS (select id, user_id, transaction_code, transaction_timestamp, transaction_amount
           from ANALYTICS.LOOKER."TRANSACTIONS" transactions
           where transaction_code in ('PMDB', 'PMTP', 'ADac', 'ADAS', 'ADTR', 'ADar')
@@ -30,10 +30,10 @@ LEFT JOIN instant_transfers ON (members."ID") = instant_transfers.user_id
 WHERE
 	(instant_transfers.transaction_timestamp  >= TO_TIMESTAMP('2020-10-22'))
 LIMIT 500;
-```
+
 
 ## Transaction count
-```
+
 WITH instant_transfers AS (select id, user_id, transaction_code, transaction_timestamp, transaction_amount
           from ANALYTICS.LOOKER."TRANSACTIONS" transactions
           where transaction_code in ('PMDB', 'PMTP', 'ADac', 'ADAS', 'ADTR', 'ADar')
@@ -46,10 +46,10 @@ LEFT JOIN instant_transfers ON (members."ID") = instant_transfers.user_id
 WHERE
 	(instant_transfers.transaction_timestamp  >= TO_TIMESTAMP('2020-10-22'))
 LIMIT 500;
-```
+
 
 ## avg instant transfer volume
-```
+
 WITH instant_transfers AS (select id, user_id, transaction_code, transaction_timestamp, transaction_amount
           from ANALYTICS.LOOKER."TRANSACTIONS" transactions
           where transaction_code in ('PMDB', 'PMTP', 'ADac', 'ADAS', 'ADTR', 'ADar')
@@ -62,10 +62,10 @@ LEFT JOIN instant_transfers ON (members."ID") = instant_transfers.user_id
 WHERE
 	(instant_transfers.transaction_timestamp  >= TO_TIMESTAMP('2020-10-22'))
 LIMIT 500;
-```
+
 
 ## loss rate: (${instant_transfers.instant_transfers_chargeback_volume} - ${instant_transfers.instant_transfers_representment_volume})/ ${instant_transfers.instant_transfers_transaction_volume}
-```
+
 WITH instant_transfers AS (select id, user_id, transaction_code, transaction_timestamp, transaction_amount
           from ANALYTICS.LOOKER."TRANSACTIONS" transactions
           where transaction_code in ('PMDB', 'PMTP', 'ADac', 'ADAS', 'ADTR', 'ADar')
@@ -80,10 +80,10 @@ LEFT JOIN instant_transfers ON (members."ID") = instant_transfers.user_id
 WHERE
 	(instant_transfers.transaction_timestamp  >= TO_TIMESTAMP('2020-10-22'))
 LIMIT 500;
-```
+
 
 ## charge back rate: ${instant_transfers.instant_transfers_chargeback_count}/${instant_transfers.instant_transfers_transaction_count}
-```
+
 WITH instant_transfers AS (select id, user_id, transaction_code, transaction_timestamp, transaction_amount
           from ANALYTICS.LOOKER."TRANSACTIONS" transactions
           where transaction_code in ('PMDB', 'PMTP', 'ADac', 'ADAS', 'ADTR', 'ADar')
@@ -97,10 +97,10 @@ LEFT JOIN instant_transfers ON (members."ID") = instant_transfers.user_id
 WHERE
 	(instant_transfers.transaction_timestamp  >= TO_TIMESTAMP('2020-10-22'))
 LIMIT 500;
-```
+
 
 ## adoption rate: ${instant_transfers.user_count}/${member_acquisition_facts.enrolled_member_count}
-```
+
 WITH instant_transfers AS (select id, user_id, transaction_code, transaction_timestamp, transaction_amount
           from ANALYTICS.LOOKER."TRANSACTIONS" transactions
           where transaction_code in ('PMDB', 'PMTP', 'ADac', 'ADAS', 'ADTR', 'ADar')
@@ -115,7 +115,7 @@ LEFT JOIN instant_transfers ON (members."ID") = instant_transfers.user_id
 WHERE
 	(member_acquisition_facts."ENROLLMENT_TIME"  >= TO_TIMESTAMP('2020-10-22'))
 LIMIT 500;
-```
+
 
 
 
