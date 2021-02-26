@@ -1,0 +1,28 @@
+  select udc.user_id
+  , udct.USER_DISPUTE_CLAIM_ID
+  , udc.created_at::timestamp as dispute_created_at
+  , udc.reason
+  , udc.dispute_type
+  , udct.transaction_id
+  , udct.amount
+  , udcu.disputed_amount
+  , case when close_code = '' then 'close_code_null'
+        when close_code in (300, 301, 302, 307, 357, 361, 363, 365) then 'approved'
+        when close_code in (322, 326, 356, 367) then 'cancelled'
+        when close_code in (325, 350, 353, 354, 364, 366) then 'denied'
+        when close_code in (321, 362) then 'merchant_credit'
+        when close_code in (303, 320, 327, 340) then 'unknown'
+        else 'np' end as close_code_grp
+  , case when close_code = '' then null
+        when close_code in (300, 301, 302, 307, 357, 361, 363, 365) then udcu.transaction_amount ELSE null END AS udcu_loss_from_disputes
+  , case when close_code = '' then null when close_code in (322, 326, 356, 367) then udcu.transaction_amount ELSE null END AS udcu_cancelled
+  , case when close_code = '' then null when close_code in (325, 350, 353, 354, 364, 366) then udcu.transaction_amount ELSE null END AS udcu_denied
+  , case when close_code = '' then null when close_code in (321, 362) then udcu.transaction_amount ELSE null END AS udcu_merchant_credit
+  , case when close_code = '' then null when close_code in (303, 320, 327, 340) then udcu.transaction_amount ELSE null END AS udcu_unknown
+  from fivetran.mysql_rds_disputes.user_dispute_claims udc
+  join fivetran.mysql_rds_disputes.user_dispute_claim_transactions udct
+    on udc.id=udct.USER_DISPUTE_CLAIM_ID and udct.transaction_code in  ('ADM', 'ADTS', 'ADTU')
+  left join fivetran.mysql_rds_disputes.user_dispute_claim_updates udcu
+    on udcu.user_dispute_claim_id = udct.user_dispute_claim_id
+    and (udcu.GALILEO_TRANSACTION_ID = udct.TRANSACTION_ID or udcu.USER_DISPUTE_CLAIM_TRANSACTION_ID =udct.id)
+  QUALIFY ROW_NUMBER() OVER (PARTITION BY udc.id, udc.user_id, udct.transaction_id  ORDER BY udcu.created_at DESC) = 1;
