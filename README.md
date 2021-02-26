@@ -7,7 +7,8 @@ Starting from 0, gradually learning the query logic used in Chime
 
 ## From teammembers
 2.1 Seven_Scores.sql: all scores used at Chime\
-2.2 Dispute_Transaction_Status: most recent status of dispute
+2.2 Dispute_Transaction_Status: most recent status of dispute\
+2.3 User_Update_Phone.sql: how to check if user update their phone or email
 
 ## Instant Transfer
 3.1 IT_Main_Tables.sql: key tables for updating and analyzing instant transfer\
