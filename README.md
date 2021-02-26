@@ -6,7 +6,7 @@ Starting from 0, gradually learning the query logic used in Chime
 1.2 From_Looker_Instant_Transfer.sql
 
 ## From teammembers
-2.1 Socure_Chime_Score.sql: all scores used at Chime\
+2.1 Seven_Scores.sql: all scores used at Chime\
 2.2 Dispute_Transaction_Status: most recent status of dispute
 
 ## Instant Transfer
