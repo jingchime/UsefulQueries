@@ -2,7 +2,7 @@
 Starting from 0, gradually learning the query logic used in Chime
 
 ## From Looker Dashboard
-1.1 From_Looker_Fraud_And_Loss.sql
+1.1 From_Looker_Fraud_And_Loss.sql\
 1.2 From_Looker_Instant_Transfer.sql
 
 ## From teammembers
