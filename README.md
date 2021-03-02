@@ -3,7 +3,8 @@ Starting from 0, gradually learning the query logic used in Chime
 
 ## From Looker Dashboard
 1.1 From_Looker_Fraud_And_Loss.sql\
-1.2 From_Looker_Instant_Transfer.sql
+1.2 From_Looker_Instant_Transfer.sql\
+1.3 From_Looker_Limit_Tiers.sql
 
 ## From teammembers
 2.1 Seven_Scores.sql: all scores used at Chime\
