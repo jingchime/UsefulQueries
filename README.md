@@ -1,5 +1,5 @@
 # Queries Backup
-Starting from 0, gradually learning the query logic used in Chime
+Starting from 0, gradually learning the query logic used at Chime
 
 ## From Looker Dashboard
 1.1 From_Looker_Fraud_And_Loss.sql\
