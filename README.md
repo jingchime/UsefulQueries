@@ -11,7 +11,8 @@ Starting from 0, gradually learning the query logic used at Chime
 2.2 Dispute_Transaction_Status: most recent status of dispute\
 2.3 User_Update_Phone.sql: how to check if user update their phone or email\
 2.4 Scan_ID.sql: if the user went through scan ID and pass/fail/manual review\
-2.5 Limit_Dispute_Rate_By_Buckets.sql: Shu shared the query for decline rate, dispute rate calculation by different group. Note that everything is grouped together. So need to comment or uncomment to change the logic if needed.
+2.5 Limit_Dispute_Rate_By_Buckets.sql: Shu shared the query for decline rate, dispute rate calculation by different group. Note that everything is grouped together. So need to comment or uncomment to change the logic if needed.\
+2.6 Available_balance.sql: available balance
 
 ## Instant Transfer
 3.1 IT_Main_Tables.sql: key tables for updating and analyzing instant transfer\
