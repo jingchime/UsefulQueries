@@ -1,0 +1,78 @@
+WITH GROUPED_INFO AS (
+  SELECT
+  TO_CHAR(DATE_TRUNC('MONTH', TRANS_DATE), 'YYYY-MM') AS MTH, 
+  --TO_CHAR(DATE_TRUNC('WEEK', TRANS_DATE), 'YYYY-MM-DD') AS WEEK, 
+  --START_WEEK,
+  --TO_DATE(TRANS_DATE) AS TRANS_DATE,
+  --LIMIT_TIER,
+  --ADMIN_REAL_LIMIT AS LIMIT_TIER,
+  --TYPE_OF_TRXN,
+  LATEST_TIER,
+  DD_AMT_BIN,
+  --REASON,
+  --(CASE WHEN P.num_of_phone_change_in_past_32_days >= 1 THEN 1 ELSE 0 END) AS phone_change_in_past_32_days,
+  --(CASE WHEN S.USER_ID IS NOT NULL THEN 1 ELSE 0 END) AS FLG_SCAN_ID,
+  CASE WHEN A.AVAILABLE_BALANCE = 0 THEN 0
+       WHEN R.FINAL_AMT/A.AVAILABLE_BALANCE <= 0.5 THEN 1 ELSE 0 
+  END AS FLG_MORE_THAN_HALF_AVAILABLE,
+  /*
+  (CASE WHEN REASON = 'unauthorized_transaction' THEN 'unauthorized_transaction'
+       WHEN REASON = 'atm_cash_not_received' THEN 'atm_cash_not_received'
+       ELSE 'others' END) AS REASON,*/
+  --CLOSE_CODE_GRP,
+  /*
+  (CASE WHEN close_code in ('300', '301', '302', '303', '307', '357', '361', '363', '365')  THEN 'Approved'
+     WHEN close_code in ('350', '353', '354', '364', '366') THEN 'Denied'
+     WHEN close_code IS NULL THEN 'Pending'
+     /*
+     WHEN close_code in ('325', '340', '367') THEN 'Deleted'
+     WHEN close_code in ('322', '356') THEN 'Withdrawn'
+     *//*
+     ELSE 'Others' END) AS close_code_grp_2,
+  */
+  --close_code,
+  /*
+  case when close_code = '' then 'close_code_null' 
+    when close_code in (300, 301, 302, 303, 307, 357, 361, 363, 365) then 'approved'
+    when close_code in (322, 325, 326, 356, 367, 340) then 'cancelled/withdrawn'
+    when close_code in (350, 353, 354, 364, 366) then 'denied' 
+    when close_code in (321, 362) then 'merchant_credit'
+    when close_code in (320, 327) then 'unknown'
+    else 'null' end as close_code_grp_updated
+  */
+  SUM(FINAL_AMT) AS TOT_AMT,
+  COUNT(1) AS TOT_NUM,
+  SUM(INTERCHANGE_FEE_AMOUNT) AS IF_AMT,
+  COUNT(DISTINCT DEC_USER) AS NUM_DECLINE_USERS,
+  SUM(CASE WHEN FLG_DISPUTED=1 THEN FINAL_AMT END) AS DISPUTED_AMT,
+  SUM(CASE WHEN FLG_DISPUTED=1 THEN 1 END) AS DISPUTED_NUM,
+  COUNT(DISTINCT FLG_DISPUTED_USER) AS NUM_DISP_USER,
+  COUNT(DISTINCT R.USER_ID) AS TOT_NUM_USER,
+  DISPUTED_NUM/TOT_NUM AS PERC_DISP_NUM,
+  (CASE WHEN COUNT(DISTINCT R.USER_ID)>0 THEN COUNT(DISTINCT FLG_DISPUTED_USER)/COUNT(DISTINCT R.USER_ID) END) AS PERC_DISP_USERS,
+  (CASE WHEN SUM(FINAL_AMT) >0 THEN SUM(CASE WHEN FLG_DISPUTED=1 THEN FINAL_AMT END)/SUM(FINAL_AMT) END) AS PERC_DISP_AMT,
+  NUM_DECLINE_USERS/TOT_NUM_USER AS DEC_RATE_USER
+  -- DECL VS NON-DECL Split
+  --SUM(CASE WHEN FLG_DISPUTED=1 AND DEC_USER IS NULL THEN FINAL_AMT END)/SUM(CASE WHEN DEC_USER IS NULL THEN FINAL_AMT END) AS PERC_DISP_AMT_NONDECL_USER,
+  --SUM(CASE WHEN FLG_DISPUTED=1 AND DEC_USER IS NOT NULL THEN FINAL_AMT END)/SUM(CASE WHEN DEC_USER IS NOT NULL THEN FINAL_AMT END) AS PERC_DISP_AMT_DECL_USER
+  FROM REST.TEST.Risk_Segmentation_disputes_02_25_2021 R
+  LEFT JOIN REST.TEST.Phone_Change_Tracker_03_02_2021 P
+  ON R.USER_ID = P.USER_ID AND TO_DATE(R.TRANS_DATE) = TO_DATE(P.DTE)
+  LEFT JOIN (SELECT USER_ID, BALANCE_ON_DATE, MAX(AVAILABLE_BALANCE) AS AVAILABLE_BALANCE
+            FROM mysql_db.galileo.GALILEO_DAILY_BALANCES
+            WHERE ACCOUNT_TYPE = '6' 
+            GROUP BY 1,2) A
+  ON R.USER_ID = A.USER_ID AND TO_DATE(R.TRANS_DATE) = DATEADD('DAY', -1, A.BALANCE_ON_DATE) 
+  LEFT JOIN REST.TEST.User_Passed_ScanId_03_02_2021 S
+  ON R.USER_ID = S.USER_ID 
+   
+  WHERE TYPE_OF_TRXN IN ('ATM Withdrawals')
+  --WHERE TYPE_OF_TRXN IN ('Debit Purchase')
+  --WHERE TYPE_OF_TRXN IN ('ACH Push')
+  --WHERE TYPE_OF_TRXN IN ('Credit Purchase', 'Debit Purchase')
+  --AND FLG_DISPUTED=1 AND LATEST_TIER = 'TIER1'
+  --AND close_code in ('321', '362') --'merchant_credit'
+  GROUP BY 1, 2, 3, 4--, 5
+ )
+SELECT * FROM GROUPED_INFO 
+ORDER BY 1, 2, 3, 4--, 5
