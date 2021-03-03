@@ -16,7 +16,7 @@ WHERE (instant_transfers.transaction_timestamp  >= TO_TIMESTAMP('2020-11-30'))
 GROUP BY 1,2
 ORDER BY 1,2;
 
--- check how off we are by adding the bank as aggregate layer (potential duplicates as match is on user level)
+-- check how off we are by adding the bank as aggregate layer (potential duplicates as mapping is on user level and user can have multiple bank accounts)
 WITH instant_transfers AS (select T.id, T.user_id, T.transaction_code, T.transaction_timestamp, T.transaction_amount
           from ANALYTICS.LOOKER."TRANSACTIONS" T
           where transaction_code in ('PMDB', 'PMTP', 'ADac', 'ADAS', 'ADTR', 'ADar') 
