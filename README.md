@@ -20,4 +20,5 @@ Starting from 0, gradually learning the query logic used at Chime
 3.3 Update_Chargeback_by_Bank.sql: used to monitor the chargeback by bank to give alerts
 
 ## Ad-hoc queries
-4.1 Phone_number_change_cumulative_tracker.sql: cumulatively track phone number change in the last 32 days
+4.1 Phone_number_change_cumulative_tracker.sql: cumulatively track phone number change in the last 32 days\
+4.2 Available_Balance_Distribution.sql: researched the distribution to set up the right cutoff
