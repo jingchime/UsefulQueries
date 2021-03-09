@@ -7,12 +7,12 @@ Starting from 0, gradually learning the query logic used at Chime
 1.3 From_Looker_Limit_Tiers.sql
 
 ## From teammembers
-2.1 Seven_Scores.sql: all scores used at Chime\
-2.2 Dispute_Transaction_Status: most recent status of dispute\
-2.3 User_Update_Phone.sql: how to check if user update their phone or email\
-2.4 Scan_ID.sql: if the user went through scan ID and pass/fail/manual review\
+2.1 Seven_Scores.sql: Stuti shared all scores used at Chime\
+2.2 Dispute_Transaction_Status: Hemali shared how to pull most recent status of dispute. Updated it with Rakesh and Shu based on several versions\
+2.3 User_Update_Phone.sql: from data-ask channel get how to check if user update their phone or email\
+2.4 Scan_ID.sql: from Karan get if the user went through scan ID and pass/fail/manual review\
 2.5 Limit_Dispute_Rate_By_Buckets.sql: Shu shared the query for decline rate, dispute rate calculation by different group. Note that everything is grouped together. So need to comment or uncomment to change the logic if needed.\
-2.6 Available_balance.sql: available balance\
+2.6 Available_balance.sql: from data-ask channel get query on available balance\
 2.7 Member_Partner_Bank.sql: Meeri shared the logic to pull stride/bancorp so I can finish the request on ALYTMM-75
 
 ## Instant Transfer
