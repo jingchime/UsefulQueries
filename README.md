@@ -17,7 +17,8 @@ Starting from 0, gradually learning the query logic used at Chime
 ## Instant Transfer
 3.1 IT_Main_Tables.sql: key tables for updating and analyzing instant transfer\
 3.2 Update_Weekly_IT_Meeting.sql: used to update weekly monitoring the blocked banks\
-3.3 Update_Chargeback_by_Bank.sql: used to monitor the chargeback by bank to give alerts
+3.3 Update_Chargeback_by_Bank.sql: used to monitor the chargeback by bank to give alerts\
+3.4 Instant_Transfer_Chargeback_Weekly.sql: used to update overall instant transfer chargebacks (both cash and cohort) by week
 
 ## Ad-hoc queries
 4.1 Phone_number_change_cumulative_tracker.sql: cumulatively track phone number change in the last 32 days\
