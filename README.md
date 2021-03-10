@@ -15,7 +15,7 @@ Starting from 0, gradually learning the query logic used at Chime\
 2.5 Limit_Dispute_Rate_By_Buckets.sql: Shu shared the query for decline rate, dispute rate calculation by different group. Note that everything is grouped together. So need to comment or uncomment to change the logic if needed.\
 2.6 Recent_balance.sql: Bin shared the logic with me to pull recent balance\
 2.7 Member_Partner_Bank.sql: Meeri shared the logic to pull stride/bancorp so I can finish the request on ALYTMM-75\
-2.8 If_DD.sql: Stuti shared the logic to determine if someone is DD or not\
+2.8 If_DD.sql: Stuti shared the logic to determine if someone is DD or not
 
 ## Instant Transfer
 3.1 Instant_Transfer_Main_Tables.sql: key tables for updating and analyzing instant transfer\
