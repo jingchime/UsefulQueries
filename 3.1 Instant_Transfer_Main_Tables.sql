@@ -25,10 +25,3 @@ chargebacks AS (
     AND TRANSACTION_TIMESTAMP >= '2020-10-01'
 )
 
--- logic shared by Baishi to map BIN to user_id (not accurate)
-debit_card as(
-    select try_cast (user_id as integer) as user_id, bin, 
-        row_number() over (partition by user_id order by timestamp desc) rn 
-    from "SEGMENT"."MOVE_MONEY_SERVICE"."DEBIT_CARD_LINKING_SUCCEEDED" qualify rn = 1
-)
-
