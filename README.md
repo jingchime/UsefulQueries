@@ -26,4 +26,5 @@ Starting from 0, gradually learning the query logic used at Chime\
 4.1 Phone_number_change_cumulative_tracker.sql: cumulatively track phone number change in the last 32 days\
 4.2 Available_Balance_Distribution.sql: researched the distribution to set up the right cutoff\
 4.3 Response_code_51_61_analysis.sql: check if one transaction can have both 51 and 61 code\
-4.4 Alibaba_Analysis.sql: supported the ad-hoc analysis fro [Alibaba](https://docs.google.com/document/d/1Z_De49MtG56AdRa_FE4lgHpyoRW6uQ7diKMNwkB-wuQ/edit) 
+4.4 Alibaba_Analysis.sql: supported the ad-hoc analysis for [Alibaba](https://docs.google.com/document/d/1Z_De49MtG56AdRa_FE4lgHpyoRW6uQ7diKMNwkB-wuQ/edit) <br/>
+4.5 Days_take_for_instant_transfer_chargeback.sql: supported the follow-up analysis after the weekly meeting [days for instant transfer to chargeback](https://docs.google.com/document/d/1R6riAlQeNHjZ8aRbDdk2tnZWvIxLlfvBA2sgtpXYjok/edit) 
