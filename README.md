@@ -14,7 +14,9 @@ Starting from 0, gradually learning the query logic used at Chime\
 2.4 Scan_ID.sql: from Karan get if the user went through scan ID and pass/fail/manual review\
 2.5 Limit_Dispute_Rate_By_Buckets.sql: Shu shared the query for decline rate, dispute rate calculation by different group. Note that everything is grouped together. So need to comment or uncomment to change the logic if needed.\
 2.6 Available_balance.sql: from data-ask channel get query on available balance\
-2.7 Member_Partner_Bank.sql: Meeri shared the logic to pull stride/bancorp so I can finish the request on ALYTMM-75
+2.7 Member_Partner_Bank.sql: Meeri shared the logic to pull stride/bancorp so I can finish the request on ALYTMM-75\
+2.8 If_DD.sql: Stuti shared the logic to determine if someone is DD or not\
+2.9 Recent_balance.sql: Bin shared the logic with me with added where clause on 2.7. This is more accurate than 2.7.
 
 ## Instant Transfer
 3.1 Instant_Transfer_Main_Tables.sql: key tables for updating and analyzing instant transfer\
