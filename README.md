@@ -32,4 +32,5 @@ Starting from 0, gradually learning the query logic used at Chime\
 4.6 Chargebacks_tie_back_to_transaction_date.sql: supported the request here [instant transfer chargebacks](https://docs.google.com/spreadsheets/d/1kFga0lzeyIQ_OrLvXrjeXuCRi04FRnxvBk4DhMOTgWM/edit?ts=60494835#gid=438205306) <br/>
 4.7 Deep_dive_into_Feb_Mar_chargebacks.sql: looked into chargebacks related to Feb and Mar transactions and see if there is pattern on the bank or socure scores there. Found that missing scores are allowed instant transfers\
 4.8 RI465_Alibaba_Block_Analysis.sql: validate the [RI465 decision](https://chime.atlassian.net/browse/RI-465) with the [document](https://docs.google.com/document/d/1kyB5wIrEy1mhivQ74xbEH40xXej8wZpQVOJcrF8GnG8/edit#) <br/> 
-4.9 Distribution_of_days_from_enrollment_to_transfer.sql: ad-hoc analysis supporting the data backfill requirement of at least 60 days
+4.9 Distribution_of_days_from_enrollment_to_transfer.sql: ad-hoc analysis supporting the data backfill requirement of at least 60 days\
+4.10 Compare_enrollment_score_with_chime_score.sql: compare enrollment score with chime score for instant transfer users (they are the same) and check the missing rate
