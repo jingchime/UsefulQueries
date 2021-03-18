@@ -49,4 +49,6 @@ SELECT distinct
 FROM instant_transfers 
 left join analytics.looker.member_acquisition_facts member on instant_transfers.user_id = member.user_id
 left join score on score.member_id = instant_transfers.user_id
-left join mysql_db.chime_prod.users users on users.id = instant_transfers.user_id;
+left join mysql_db.chime_prod.users users on users.id = instant_transfers.user_id
+where member.enrollment_date >= '2020-10-01'
+order by 1 desc;
