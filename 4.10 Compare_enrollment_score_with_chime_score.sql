@@ -1,7 +1,7 @@
-WITH instant_transfers AS (select id, user_id,transaction_code, transaction_timestamp, transaction_amount 
+ITH instant_transfers AS (select id, user_id,transaction_code, transaction_timestamp, transaction_amount 
           from ANALYTICS.LOOKER."TRANSACTIONS" T  
           where transaction_code in ('PMDB', 'PMTP', 'ADac', 'ADAS', 'ADTR', 'ADar')  
-          and transaction_timestamp >= '2020-11-01'),
+          and transaction_timestamp >= '2020-10-01'),
 
 score as (select 
 to_date(api.created_at) as created_on,
@@ -38,6 +38,7 @@ and api.service='socure3'
 and  CHECK_JSON(api.result) is null 
 and api.created_at >= '2020-07-01' 
 qualify rn=1) 
+
 SELECT distinct 
     member.enrollment_date,
     instant_transfers.user_id,
@@ -48,5 +49,4 @@ SELECT distinct
 FROM instant_transfers 
 left join analytics.looker.member_acquisition_facts member on instant_transfers.user_id = member.user_id
 left join score on score.member_id = instant_transfers.user_id
-left join mysql_db.chime_prod.users users on users.id = instant_transfers.user_id
-where users.socure_enrollment_score is not null; -- check if enrollment score is chime score
+left join mysql_db.chime_prod.users users on users.id = instant_transfers.user_id;
