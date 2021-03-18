@@ -1,4 +1,4 @@
-ITH instant_transfers AS (select id, user_id,transaction_code, transaction_timestamp, transaction_amount 
+WITH instant_transfers AS (select id, user_id,transaction_code, transaction_timestamp, transaction_amount 
           from ANALYTICS.LOOKER."TRANSACTIONS" T  
           where transaction_code in ('PMDB', 'PMTP', 'ADac', 'ADAS', 'ADTR', 'ADar')  
           and transaction_timestamp >= '2020-10-01'),
