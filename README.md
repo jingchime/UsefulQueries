@@ -35,4 +35,7 @@ Starting from 0, gradually learning the query logic used at Chime\
 4.7 Deep_dive_into_Feb_Mar_chargebacks.sql: looked into chargebacks related to Feb and Mar transactions and see if there is pattern on the bank or socure scores there. Found that missing scores are allowed instant transfers\
 4.8 RI465_Alibaba_Block_Analysis.sql: validate the [RI465 decision](https://chime.atlassian.net/browse/RI-465) with the [document](https://docs.google.com/document/d/1kyB5wIrEy1mhivQ74xbEH40xXej8wZpQVOJcrF8GnG8/edit#) <br/> 
 4.9 Distribution_of_days_from_enrollment_to_transfer.sql: ad-hoc analysis supporting the data backfill requirement of at least 60 days\
-4.10 Compare_enrollment_score_with_chime_score.sql: compare enrollment score with chime score for instant transfer users (they are the same) and check the missing rate
+4.10 Compare_enrollment_score_with_chime_score.sql: compare enrollment score with chime score for instant transfer users (they are the same) and check the missing rate\
+4.11 First_Card_Activation_day.sql: 7 methods used to get the first card activation day [document](https://docs.google.com/document/d/1tKEuecSFfQo4jtn5ZCOmXhXVkFaBFMkXLqVIKiP8V3E/edit#) <br/>
+4.12 DD_Amount_Tracker.sql: cumulatively track total DD amount in the last 1,3,6 months\
+4.13 Debit_Purchase_Amount_Tracker.sql: cumulatively track total debit purchase amount in the last 1,3,6 months\
