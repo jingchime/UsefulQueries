@@ -97,3 +97,104 @@ where method_1.user_id in
 15230817,
 1420051,
 7383340);
+
+-- final method combining all parts:
+select 
+if_trx_earlier_than_activation,
+transaction_type,
+sum(TRANSACTION_AMOUNT) as total_trx_amount,
+sum(case when FLG_DISPUTED = 1 then TRANSACTION_AMOUNT else 0 end) as disputed_amount,
+disputed_amount/total_trx_amount as dispute_rate
+from
+(
+  select 
+  case when (t.transaction_code in ('ISA', 'ISC', 'ISJ', 'ISL', 'ISM', 'ISR', 'ISZ', 'VSA', 'VSC', 'VSJ', 'VSL', 'VSM', 'VSR', 'VSZ',
+                   'SDA', 'SDC', 'SDL', 'SDM', 'SDR', 'SDV', 'SDZ', 'PLM', 'PLA', 'PRA') and unique_program_id in (600, 278))  then 'Credit Purchase'
+   when t.transaction_code in ('ISA', 'ISC', 'ISJ', 'ISL', 'ISM', 'ISR', 'ISZ', 'VSA', 'VSC', 'VSJ', 'VSL', 'VSM', 'VSR', 'VSZ',
+                   'SDA', 'SDC', 'SDL', 'SDM', 'SDR', 'SDV', 'SDZ', 'PLM', 'PLA', 'PRA') then 'Debit Purchase'      
+   WHEN t.TRANSACTION_CODE = 'ADS' THEN 'ACH Transfer'  --ACH PUSH
+   WHEN t.TRANSACTION_CODE in ('ADbc', 'ADcn') then 'ACH debit'
+   when t.transaction_code in ('ADM', 'ADPF', 'ADTS', 'ADTU','ADpb') then 'PF_outgoing'
+   when t.transaction_code in ('VSW','MPW','MPM', 'MPR','PLW', 'PLR','PRW', 'SDW') then 'ATM Withdrawals'    
+   else 'Other' end as transaction_type,
+   activate.card_activated_at,
+   t.TRANSACTION_TIMESTAMP,
+   case when activate.card_activated_at is null then 'no first card info'
+        when t.TRANSACTION_TIMESTAMP < activate.card_activated_at then 'trx before activation'
+   else 'trx after activation' end as if_trx_earlier_than_activation,
+   CASE WHEN dispute.TRANSACTION_ID IS NOT NULL THEN 1 ELSE 0 END AS FLG_DISPUTED,
+   t.*
+  from (select 	  
+        case when transaction_code like 'AD%' then 4
+              when transaction_code like 'FE%' then 5
+              when transaction_code like 'IS%' then 6
+              when transaction_code like 'PM%' then 7
+              when transaction_code like 'SD%' then 8
+              when transaction_code like 'VS%' then 9 else 0 end
+        AS leading_num,
+        *
+        from ANALYTICS.LOOKER."TRANSACTIONS"   
+        ) t
+  left join (select
+             user_id,
+            dateadd(day, 5, min(CREATED_AT)::timestamp) AS card_activated_at 
+            FROM "MYSQL_DB"."GALILEO"."GALILEO_ACCOUNT_CARDS"
+            GROUP BY 1) activate 
+  on t.user_id = activate.user_id
+  LEFT JOIN (SELECT DISTINCT A.USER_ID, B.TRANSACTION_ID, A.REASON
+             FROM ANALYTICS.LOOKER.USER_DISPUTE_CLAIMS AS A
+             LEFT JOIN ANALYTICS.LOOKER.USER_DISPUTE_CLAIM_TRANSACTIONS AS B
+             ON A.ID=B.USER_DISPUTE_CLAIM_ID) AS dispute
+  ON t.USER_ID=dispute.USER_ID
+  AND TO_NUMBER(CONCAT(t.leading_num, t.AUTHORIZATION_CODE)) = TO_NUMBER(dispute.TRANSACTION_ID)
+  --where t.TRANSACTION_TIMESTAMP >= '2021-1-1' and t.TRANSACTION_TIMESTAMP <= '2021-2-28'
+  where t.TRANSACTION_TIMESTAMP >= '2020-10-01' and t.TRANSACTION_TIMESTAMP <= '2020-12-31' --Q4 2020
+) subquery
+group by 1,2
+order by 3
+;
+
+-- for spot check case study
+-- user_id 19800418 actual activated 2020-11-16, this method show 2020-11-15 (PF_outgoing)
+
+select 
+case when (t.transaction_code in ('ISA', 'ISC', 'ISJ', 'ISL', 'ISM', 'ISR', 'ISZ', 'VSA', 'VSC', 'VSJ', 'VSL', 'VSM', 'VSR', 'VSZ',
+                 'SDA', 'SDC', 'SDL', 'SDM', 'SDR', 'SDV', 'SDZ', 'PLM', 'PLA', 'PRA') and unique_program_id in (600, 278))  then 'Credit Purchase'
+ when t.transaction_code in ('ISA', 'ISC', 'ISJ', 'ISL', 'ISM', 'ISR', 'ISZ', 'VSA', 'VSC', 'VSJ', 'VSL', 'VSM', 'VSR', 'VSZ',
+                 'SDA', 'SDC', 'SDL', 'SDM', 'SDR', 'SDV', 'SDZ', 'PLM', 'PLA', 'PRA') then 'Debit Purchase'      
+ WHEN t.TRANSACTION_CODE = 'ADS' THEN 'ACH Transfer'  --ACH PUSH
+ WHEN t.TRANSACTION_CODE in ('ADbc', 'ADcn') then 'ACH debit'
+ when t.transaction_code in ('ADM', 'ADPF', 'ADTS', 'ADTU','ADpb') then 'PF_outgoing'
+ when t.transaction_code in ('VSW','MPW','MPM', 'MPR','PLW', 'PLR','PRW', 'SDW') then 'ATM Withdrawals'    
+ else 'Other' end as transaction_type,
+ activate.card_activated_at,
+ t.TRANSACTION_TIMESTAMP,
+ case when t.TRANSACTION_TIMESTAMP < activate.card_activated_at then 1 else 0 end as if_trx_earlier_than_activation,
+ CASE WHEN dispute.TRANSACTION_ID IS NOT NULL THEN 1 ELSE 0 END AS FLG_DISPUTED,
+ t.user_id,
+ t.*
+from (select 	  
+      case when transaction_code like 'AD%' then 4
+	        when transaction_code like 'FE%' then 5
+	        when transaction_code like 'IS%' then 6
+	        when transaction_code like 'PM%' then 7
+	        when transaction_code like 'SD%' then 8
+	        when transaction_code like 'VS%' then 9 else 0 end
+      AS leading_num,
+      *
+      from ANALYTICS.LOOKER."TRANSACTIONS"   
+      ) t
+left join (select
+            user_id,
+            dateadd(day, 5, min(CREATED_AT)::timestamp) AS card_activated_at 
+            FROM "MYSQL_DB"."GALILEO"."GALILEO_ACCOUNT_CARDS"
+            GROUP BY 1) activate 
+on t.user_id = activate.user_id
+LEFT JOIN (SELECT DISTINCT A.USER_ID, B.TRANSACTION_ID, A.REASON
+           FROM ANALYTICS.LOOKER.USER_DISPUTE_CLAIMS AS A
+           LEFT JOIN ANALYTICS.LOOKER.USER_DISPUTE_CLAIM_TRANSACTIONS AS B
+           ON A.ID=B.USER_DISPUTE_CLAIM_ID) AS dispute
+ON t.USER_ID=dispute.USER_ID
+AND TO_NUMBER(CONCAT(t.leading_num, t.AUTHORIZATION_CODE)) = TO_NUMBER(dispute.TRANSACTION_ID)
+where if_trx_earlier_than_activation = 1 and transaction_type not in ('Other') 
+limit 100;
