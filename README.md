@@ -39,3 +39,4 @@ Starting from 0, gradually learning the query logic used at Chime\
 4011 First_Card_Activation_day.sql: 7 methods used to get the first card activation day for the analysis[Transactions prior to card activation](https://docs.google.com/document/d/1tKEuecSFfQo4jtn5ZCOmXhXVkFaBFMkXLqVIKiP8V3E/edit#) <br/>
 4012 DD_Amount_Tracker.sql: cumulatively track total DD amount in the last 1,3,6 months\
 4013 Debit_Purchase_Amount_Tracker.sql: cumulatively track total debit purchase amount in the last 1,3,6 months\
+4014 4014 Virtual_Card_Transactions.sql: used for the virtual card transaction analysis [doc](https://docs.google.com/document/d/1Hcpq5Aqgc7H6Bu9IeU7xdisCySX5qHez1MrewomBzs0/edit#heading=h.75r11l61c0on) <br/>
