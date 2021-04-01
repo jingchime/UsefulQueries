@@ -19,3 +19,11 @@ join "MYSQL_DB"."CHIME_PROD"."REALTIME_AUTH_EVENTS" a
 on t.user_id = a.user_id and t.AUTHORIZATION_CODE = a.AUTH_ID
 where t.user_id = 5108088
 order by a.TRANS_DATE; -- 2218 rows
+
+-- check response code 61
+select a.TRANS_DATE, a.available_funds, a.*
+from ANALYTICS.LOOKER."TRANSACTIONS" t 
+join "MYSQL_DB"."CHIME_PROD"."REALTIME_AUTH_EVENTS" a
+on t.user_id = a.user_id and t.AUTHORIZATION_CODE = a.AUTH_ID
+where TRY_CAST(a.RESP_CODE as INTEGER)  = 61
+limit 100;
