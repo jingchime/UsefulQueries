@@ -17,7 +17,8 @@ Starting from 0, gradually learning the query logic used at Chime\
 2007 Member_Partner_Bank.sql: Meeri shared the logic to pull stride/bancorp so I can finish the request on ALYTMM-75\
 2008 If_DD.sql: Stuti shared the logic to determine if someone is DD or not\
 2009 Transaction_Type.sql: Bin shared the logic to get the transaction type from ANALYTICS.LOOKER."TRANSACTIONS" \
-2010 Dispute_Indicator.sql: Shu shared the logic to tag the dispute
+2010 Dispute_Indicator.sql: Shu shared the logic to tag the dispute\
+2011 Real_time_available_funds.sql supported analysis for [disputes capped by limits](https://docs.google.com/spreadsheets/d/1HtIoJrf7BqJE6URUcX6YL4vc4eTILmg4sSrQfD2FjPU/edit?ts=606519e4#gid=0)
 
 ## Instant Transfer
 3001 Instant_Transfer_Main_Tables.sql: key tables for updating and analyzing instant transfer\
