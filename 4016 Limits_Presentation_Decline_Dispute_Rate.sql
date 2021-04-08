@@ -113,7 +113,16 @@ from
   ON uad_cancellation.account_deactivation_reason_id = adr_cancellation.id) tmp
 group by 1;
 
--- logic to build the temp table
+        
+        
+        
+        
+        
+        
+        
+        
+        
+-- Shu's logic to build the temp table
 CREATE OR REPLACE TABLE REST.TEST.Risk_Segmentation_03_31_2021 AS (
 WITH STRICT_PDD AS (
  SELECT TO_DATE(POST_DATE) AS TRXN_DATE,
