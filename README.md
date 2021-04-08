@@ -43,4 +43,5 @@ Starting from 0, gradually learning the query logic used at Chime\
 4013 Debit_Purchase_Amount_Tracker.sql: cumulatively track total debit purchase amount in the last 1,3,6 months\
 4014 Virtual_Card_Transactions.sql: used for the virtual card transaction analysis [doc](https://docs.google.com/document/d/1Hcpq5Aqgc7H6Bu9IeU7xdisCySX5qHez1MrewomBzs0/edit#heading=h.75r11l61c0on) <br/>
 4015 Member_Status.sql: find the members who are suspended or cancelled (not member initiated) and exclude them from analysis\
-4016 Limits_Presentation.sql: documented the queries I used to update page 10 and 15 of the [presentaion](https://docs.google.com/presentation/d/1FovHs6LSREvmq-a0UVUwwIP77z2ocbWe2YlS7CBsjg4/edit#slide=id.g62bd80da81_0_529) 
+4016 Limits_Presentation.sql: documented the queries I used to update page 10 and 15 of the [presentaion](https://docs.google.com/presentation/d/1FovHs6LSREvmq-a0UVUwwIP77z2ocbWe2YlS7CBsjg4/edit#slide=id.g62bd80da81_0_529) <br/>
+4017 ACH_Pull_Days_Distribution.sql: get the distribution of proceed/return ACH pull transfers. The excel file is [Excel data](https://docs.google.com/spreadsheets/d/1d3c-1-1ftpTCODh4Azn4SaD6wyXD5Hp1HZ--xIJ2rbs/edit#gid=1794551769) and the document is [doc](https://docs.google.com/document/d/1780t_rL93RK0Ro9o-G1IpI8dsKko1dqeI5t0sClMT-s/edit) <br/>
