@@ -1,3 +1,5 @@
+-- use to aggregate information for analysis
+
 WITH GROUPED_INFO AS (
   SELECT
   TO_CHAR(DATE_TRUNC('MONTH', TRANS_DATE), 'YYYY-MM') AS MTH, 
