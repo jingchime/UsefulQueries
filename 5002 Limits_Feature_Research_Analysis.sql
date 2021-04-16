@@ -1,129 +1,53 @@
--- table used (query to create it is at the end)
-REST.TEST.Risk_Segmentation_03_31_2021;
+-- main research tables for graphs:
+WITH GROUPED_INFO AS (
+  SELECT
+  TO_CHAR(DATE_TRUNC('MONTH', TRANS_DATE), 'YYYY-MM') AS MTH, 
+  TYPE_OF_TRXN,
+  -- different criteria
+  case when DD_AMT>0 then 1 else 0 end as if_dd_greater_than_0,
+  --case when DD_AMT>200 then 1 else 0 end as if_dd_greater_than_200,
+  --case when A.AVAILABLE_BALANCE > 100 then 1 else 0 end as if_greater_than_100,
+  --case when P.num_of_phone_change_in_past_32_days > 0 then 0 else 1 end as if_no_phone_number_change_past_32_day,
+  --case when SOCURE_SIGMA_SCORE <= 0.9 then 1 else 0 end as if_sigma_less_than,
+  --case when SOCURE_EMAIL_RISK_SCORE <= 0.9 then 1 else 0 end as if_email_less_than,
+  --case when SOCURE_PHONE_RISK_SCORE <= 0.9 then 1 else 0 end as if_phone_less_than,
+  
+  COUNT(DISTINCT R.USER_ID) AS TOT_NUM_USER,
+  SUM(CASE WHEN FLG_DISPUTED=1 THEN FINAL_AMT END)/SUM(FINAL_AMT) AS PERC_DISP_AMT,
+  COUNT(DISTINCT DEC_USER)/COUNT(DISTINCT R.USER_ID) AS DEC_RATE_USER,
+  sum(INTERCHANGE_FEE_AMOUNT) as total_interchange,
+  sum(FINAL_AMT) as total_transaction,
+  sum(CASE WHEN FLG_DISPUTED=1 THEN FINAL_AMT ENd) as total_disputed_dollar,
+  COUNT(DISTINCT case when debit_still_declines.user_id is not null or atm_still_declines.user_id is not null then R.DEC_USER end)/COUNT(DISTINCT R.USER_ID) AS simulated_dec_RATE_USER,
+  COUNT(DISTINCT case when debit_still_declines.user_id is not null or atm_still_declines.user_id is not null then R.DEC_USER end) as simulated_still_decline_comnbine_users,
+  COUNT(DISTINCT debit_still_declines.user_id) as simulated_still_decline_debit_users,
+  COUNT(DISTINCT atm_still_declines.user_id) as simulated_still_decline_atm_users
+  
+  FROM REST.TEST.Risk_Segmentation_04_12_2021 R
+  LEFT JOIN REST.TEST.Phone_Change_Tracker_04_13_2021 P
+  ON R.USER_ID = P.USER_ID AND TO_DATE(R.TRANS_DATE) = TO_DATE(P.DTE)
+  LEFT JOIN (SELECT USER_ID, BALANCE_ON_DATE, MAX(AVAILABLE_BALANCE) AS AVAILABLE_BALANCE
+            FROM mysql_db.galileo.GALILEO_DAILY_BALANCES
+            WHERE ACCOUNT_TYPE = '6' 
+            GROUP BY 1,2) A
+  ON R.USER_ID = A.USER_ID AND TO_DATE(R.TRANS_DATE) = DATEADD('DAY', 1, A.BALANCE_ON_DATE) -- add one day
+  LEFT JOIN rest.test.debit_still_decline_with_tier2_0414 debit_still_declines
+  ON TO_CHAR(DATE_TRUNC('MONTH', R.TRANS_DATE), 'YYYY-MM') = debit_still_declines.mth and R.DEC_USER = debit_still_declines.user_id and r.TYPE_OF_TRXN = 'Debit Purchase'
+  LEFT JOIN rest.test.atm_still_decline_with_tier2_0414 atm_still_declines
+  ON TO_CHAR(DATE_TRUNC('MONTH', R.TRANS_DATE), 'YYYY-MM') = atm_still_declines.mth and R.DEC_USER = atm_still_declines.user_id and r.TYPE_OF_TRXN = 'ATM Withdrawals'
+  WHERE TYPE_OF_TRXN IN ('ATM Withdrawals','Debit Purchase')
+  and trans_date >= '2020-09-01' and  trans_date  <= '2021-02-28'
+  and TIER_AT_TRXN in ('TIER1')
+  GROUP BY 1, 2, 3
+ )
+SELECT * FROM GROUPED_INFO 
+ORDER BY 1, 2, 3;
 
--- page 10: Within Tier 1, non-DDers are the ones driving the high ATM dispute rate 
-select 
-TYPE_OF_TRXN,
-CASE WHEN DD_AMT > 0 THEN 'DD>0'
-ELSE 'DD=0'
-END as DD_AMT_BIN,
-sum(case when FLG_DISPUTED=1 then FINAL_AMT else 0 end)/sum(FINAL_AMT) as dispute_rate
-from REST.TEST.Risk_Segmentation_03_31_2021
-where LATEST_TIER = 'TIER1'
-and DATE_TRUNC('month', TRANS_DATE)::date = '2021-02-01'
-and TYPE_OF_TRXN in ('Debit Purchase','ATM Withdrawals' )
-group by 1,2
-order by 1,2;
-       
--- decline rate across time
-select 
-TYPE_OF_TRXN,
-DATE_TRUNC('week', TRANS_DATE)::date,
-LATEST_TIER,
-COUNT(DISTINCT DEC_USER)/COUNT(DISTINCT USER_ID) as decline_rate
-from REST.TEST.Risk_Segmentation_03_31_2021
-where trans_date >= '2020-09-28' and  trans_date  <= '2021-03-28'
-and TYPE_OF_TRXN in ('Debit Purchase','ATM Withdrawals', 'Credit Purchase')
-group by 1,2,3
-order by 1,2,3;
+-- the above query leveraged several temp tables with the queries summarized below:
 
--- within tier 1
--- decline rate across time
-select 
-TYPE_OF_TRXN,
-DATE_TRUNC('week', TRANS_DATE)::date,
-CASE WHEN DD_AMT > 0 THEN 'DD>0'
-ELSE 'DD=0'
-END as DD_AMT_BIN,
-COUNT(DISTINCT DEC_USER)/COUNT(DISTINCT USER_ID) as decline_rate
-from REST.TEST.Risk_Segmentation_03_31_2021
-where trans_date >= '2020-09-28' and  trans_date  <= '2021-03-28'
-and TYPE_OF_TRXN in ('Debit Purchase','ATM Withdrawals')
-and LATEST_TIER = 'TIER1'
-group by 1,2,3
-order by 1,2,3;
-
--- page 15: With the current framework, 1.9% of active MMs experience a declined transaction due to limits (Q4 20)
-select 
---TYPE_OF_TRXN,
-DATE_TRUNC('month', TRANS_DATE)::date,
---LATEST_TIER,
-COUNT(DISTINCT DEC_USER) as decline_users,
-COUNT(DISTINCT USER_ID) as total_users,
-COUNT(DISTINCT DEC_USER)/COUNT(DISTINCT USER_ID) as decline_rate
-from REST.TEST.Risk_Segmentation_03_31_2021
-where trans_date >= '2020-10-01' and  trans_date  <= '2020-12-31'
-and TYPE_OF_TRXN in ('Debit Purchase','ATM Withdrawals', 'Credit Purchase')
-group by 1
-order by 1 desc;
---group by 1,2,3
---order by 1,2,3;
-
--- page 15: answer brian's question to compare with the version with suspended/cancelled accounts removed
--- results saved here https://docs.google.com/spreadsheets/d/115CAzH6KBwd1H203cRbGweru2hxf-A-gBNq-ce1HtWY/edit#gid=0
-select 
-DATE_TRUNC('month', TRANS_DATE)::date,
-COUNT(DISTINCT DEC_USER),
-COUNT(DISTINCT USER_ID),
-COUNT(DISTINCT DEC_USER)/COUNT(DISTINCT USER_ID)
-from REST.TEST.double_check_0331
-where trans_date >= '2020-10-01' and  trans_date  <= '2020-12-31'
-and TYPE_OF_TRXN in ('Debit Purchase','ATM Withdrawals', 'Credit Purchase')
-and user_id not in (
- select distinct id as user_id
- from (
-        (select
-        users.id,
-        case when users.status = 'suspended' then 1
-             when users.status = 'cancelled' and adr_cancellation.reason <> 'member' then 1
-             when users.status = 'cancelled_no_refund' and adr_cancellation.reason <> 'member' then 1
-             else 0
-        end as if_suspended_or_cancelled,
-        users.status,
-        adr_cancellation.reason
-        FROM "MYSQL_DB"."CHIME_PROD"."USERS" users
-        LEFT JOIN "MYSQL_DB"."CHIME_PROD"."USER_ACCOUNT_DEACTIVATIONS" AS uad_cancellation
-        ON users.id = uad_cancellation.user_id
-        AND uad_cancellation.account_deactivation_reason_type = 'AccountCancellationReason'
-        LEFT JOIN "MYSQL_DB"."CHIME_PROD"."ACCOUNT_DEACTIVATION_REASONS" AS adr_cancellation
-        ON uad_cancellation.account_deactivation_reason_id = adr_cancellation.id
-        where if_suspended_or_cancelled = 1) tmp )) 
-group by 1;
-
--- check distribution of suspended/cancelled
-select
-if_suspended_or_cancelled,
-count(distinct id)
-from
-(
-  select
-  users.id,
-  case when users.status = 'suspended' then 1
-       when users.status = 'cancelled' and adr_cancellation.reason <> 'member' then 1
-       when users.status = 'cancelled_no_refund' and adr_cancellation.reason <> 'member' then 1
-       else 0
-  end as if_suspended_or_cancelled,
-  users.status,
-  adr_cancellation.reason
-  FROM "MYSQL_DB"."CHIME_PROD"."USERS" users
-  LEFT JOIN "MYSQL_DB"."CHIME_PROD"."USER_ACCOUNT_DEACTIVATIONS" AS uad_cancellation
-  ON users.id = uad_cancellation.user_id
-  AND uad_cancellation.account_deactivation_reason_type = 'AccountCancellationReason'
-  LEFT JOIN "MYSQL_DB"."CHIME_PROD"."ACCOUNT_DEACTIVATION_REASONS" AS adr_cancellation
-  ON uad_cancellation.account_deactivation_reason_id = adr_cancellation.id) tmp
-group by 1;
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
--- Shu's logic to build the temp table
-CREATE OR REPLACE TABLE REST.TEST.Risk_Segmentation_03_31_2021 AS (
+-- temp table 1: update Shu's logic in 5001 to incorporate the simulated tier, latest tier and tier at transaction from 2020-01-01
+-- simulated tier table in code 2012
+CREATE OR REPLACE TABLE REST.TEST.Risk_Segmentation_04_12_2021 AS (
 WITH STRICT_PDD AS (
  SELECT TO_DATE(POST_DATE) AS TRXN_DATE,
   DATEADD(DAY, -32, TO_DATE(POST_DATE)) AS TRXN_DATE_1M,
@@ -151,79 +75,8 @@ WITH STRICT_PDD AS (
     WHERE TRXN_DATE >= '2020-02-11'
     QUALIFY (ROW_NUMBER() OVER (PARTITION BY USER_ID ORDER BY DD_AMT DESC)) = 1  -- keep the first date when that tier upgrade happens
 )
-
-, REAL_TIER_CHANGE AS (
-    SELECT
-    ID,
-    --DATE_PT AS UPGRADE_DT,
-    "TIMESTAMP":: DATE AS UPGRADE_DT,
-    USER_ID,
-    -- new_product_id => new_product_id
-    TRY_TO_NUMBER(dd_amount, 10, 2) AS dd_amount,
-    TO_CHAR(new_product_id) AS new_product_id,
-    TO_CHAR(old_product_id) AS old_product_id,
-    (CASE
-      --WHEN TO_CHAR(new_product_id) = 'virtual_tier4' THEN 'TIER4'
-      WHEN TRY_TO_NUMBER(TO_CHAR(new_product_id))  IN (6524,6523,6495,6287,6216,6254,6200,6049,6048,5887,5176,5048,2295,2294,2239,2070,2068) THEN 'TIER1' --02/19:add (6524,2295,2294,2070)
-      WHEN TRY_TO_NUMBER(TO_CHAR(new_product_id))  IN (8069,6526,6525,6222,6121,5888,2300,2298,2297,2246,2081,2067) THEN 'TIER2'  --02/16Update: IN (6525,6222,6121,5888,2081,2246) --02/19:add (8069,6526,2300,2067)
-      WHEN TRY_TO_NUMBER(TO_CHAR(new_product_id))   IN (6638,6627,2299,2240,2074,2071) THEN 'TIER3' -- 02/16Update: IN (6638,6627,2071) THEN 'TIER3'
-      WHEN TRY_TO_NUMBER(TO_CHAR(new_product_id))   IN (2227,2226,2225,2189) THEN 'TIER4' -- 02/19Update: add Tier4
-      ELSE 'OTHERS'
-    END) AS new_tier,
-    (CASE
-      --WHEN TO_CHAR(old_product_id) = 'virtual_tier4' THEN 'TIER4'
-      WHEN TRY_TO_NUMBER(TO_CHAR(old_product_id))  IN (6524,6523,6495,6287,6216,6254,6200,6049,6048,5887,5176,5048,2295,2294,2239,2070,2068) THEN 'TIER1' --02/19:add (6524,2295,2294,2070)
-      WHEN TRY_TO_NUMBER(TO_CHAR(old_product_id))  IN (8069,6526,6525,6222,6121,5888,2300,2298,2297,2246,2081,2067) THEN 'TIER2'  --02/16Update: IN (6525,6222,6121,5888,2081,2246) --02/19:add (8069,6526,2300,2067)
-      WHEN TRY_TO_NUMBER(TO_CHAR(old_product_id))  IN (6638,6627,2299,2240,2074,2071) THEN 'TIER3' -- 02/16Update: IN (6638,6627,2071) THEN 'TIER3'
-      WHEN TRY_TO_NUMBER(TO_CHAR(old_product_id))  IN (2227,2226,2225,2189) THEN 'TIER4' -- 02/19Update: add Tier4
-      ELSE 'OTHERS'
-    END) AS old_tier
-    --FROM ANALYTICS.LOOKER.SIO_TRACKS
-    FROM SEGMENT.CHIME_PROD.PRODUCT_ID_UPGRADED_FOR_HIGHER_SPENDING_LIMITS
-    WHERE new_tier <> old_tier AND UPGRADE_DT >= '2020-02-11'
-    AND new_product_id != 'virtual_tier4'
-    --WHERE EVENT = 'product_id upgraded for higher spending limits' AND new_tier <> old_tier AND UPGRADE_DT >= '2020-02-11'
-    QUALIFY (ROW_NUMBER() OVER (PARTITION BY USER_ID, NEW_TIER ORDER BY UPGRADE_DT)) = 1  -- keep the first date when that tier upgrade happens
-)
-
--- Add records before 2020-02-11
-,ALL_REAL_TIER_CHANGE AS (
-    SELECT *
-    FROM REAL_TIER_CHANGE
-    UNION
-     (SELECT TO_CHAR(-1) AS ID, TO_DATE(UPDATED_AT) AS UPGRADE_DT, USER_ID, NULL AS DD_AMOUNT, TO_CHAR(PRODUCT_ID) AS NEW_PRODUCT_ID, NULL AS OLD_PRODUCT_ID, 'TIER2' AS NEW_TIER, 'TIER1' AS OLD_TIER
-         FROM MYSQL_DB.CHIME_PROD.USER_BANK_ACCOUNTS
-         WHERE TYPE = 'checking' AND UPDATED_AT < '2020-02-11'
-         AND PRODUCT_ID IN (8069,6526,6525,6222,6121,5888,2300,2298,2297,2246,2081,2067) -- TIER2 ONLY -02/19: update PIDs
-         QUALIFY (RANK() OVER (PARTITION BY USER_ID ORDER BY UPDATED_AT DESC)) = 1)
-)
-
-
-,DATES_REAL_NEW_TIER_CHANGE AS (
-  SELECT
-  USER_ID,
-  (CASE WHEN
-      (SUM(CASE WHEN NEW_TIER='TIER3' AND OLD_TIER = 'TIER2' THEN 1 ELSE 0 END) > 0
-      AND
-      SUM(CASE WHEN NEW_TIER='TIER2' AND OLD_TIER = 'TIER1' THEN 1 ELSE 0 END) = 0)
-      OR
-      (SUM(CASE WHEN NEW_TIER='TIER4' AND OLD_TIER = 'TIER2' THEN 1 ELSE 0 END) > 0
-      AND
-      SUM(CASE WHEN NEW_TIER='TIER2' AND OLD_TIER = 'TIER1' THEN 1 ELSE 0 END) = 0)
-  THEN TO_DATE('2020-02-11')
-  ELSE MIN(CASE WHEN NEW_TIER='TIER2' THEN UPGRADE_DT END)
-  END) AS FIRST_DATE_TIER2,
-
-  MIN(CASE WHEN NEW_TIER='TIER3' THEN UPGRADE_DT END) AS FIRST_DATE_TIER3,
-  MIN(CASE WHEN NEW_TIER='TIER4' THEN UPGRADE_DT END) AS FIRST_DATE_TIER4
-
-  FROM ALL_REAL_TIER_CHANGE
-  GROUP BY 1
-)
-
-
-
-,WEEKS_DATES AS (
+  
+, WEEKS_DATES AS (
   SELECT DISTINCT
   TO_DATE(TRANS_DATE) AS TRANS_DATE,
   DAYOFWEEK(TRANS_DATE) AS DOW,
@@ -339,19 +192,9 @@ SELECT USER_ID
   A.ID,
   A.INTERCHANGE_FEE_AMOUNT,
   A.TYPE_OF_TRXN,
-  D.FIRST_DATE_TIER2,
-  D.FIRST_DATE_TIER3,
-  D.FIRST_DATE_TIER4,
-  (CASE
-      WHEN TO_DATE(A.TRANSACTION_TIMESTAMP)>=D.FIRST_DATE_TIER4 THEN 'TIER4'
-      WHEN TO_DATE(A.TRANSACTION_TIMESTAMP)>=D.FIRST_DATE_TIER3 THEN 'TIER3'
-      WHEN TO_DATE(A.TRANSACTION_TIMESTAMP)>=D.FIRST_DATE_TIER2 THEN 'TIER2'
-      ELSE 'TIER1'
-    END) AS ADMIN_REAL_LIMIT,
-   (CASE WHEN D.USER_ID IS NOT NULL AND D.FIRST_DATE_TIER4 IS NOT NULL THEN 'TIER4'
-         WHEN D.USER_ID IS NOT NULL AND D.FIRST_DATE_TIER3 IS NOT NULL THEN 'TIER3'
-         WHEN D.USER_ID IS NOT NULL AND D.FIRST_DATE_TIER2 IS NOT NULL THEN 'TIER2'
-    ELSE 'TIER1' END) AS LATEST_TIER,
+  D.SIMULATED_TIER,
+  D.TIER_AT_TRXN,
+  D.LATEST_TIER,
   (CASE WHEN E.TRANSACTION_ID IS NOT NULL THEN 1 ELSE 0 END) AS FLG_DISPUTED,
   (CASE WHEN E.TRANSACTION_ID IS NOT NULL THEN A.USER_ID END) AS FLG_DISPUTED_USER,
   F.USER_ID AS DEC_USER,
@@ -359,17 +202,6 @@ SELECT USER_ID
   M.USER_ID AS DD_USER,
   M.TRXN_DATE AS DD_TRXN_DATE,
   M.DD_AMT,
-  /*
-  (CASE WHEN DD_AMT >= 200 AND DD_AMT < 400 THEN '2.200-400'
-       WHEN DD_AMT >= 400 AND DD_AMT < 600 THEN '3.400-600'
-       WHEN DD_AMT >= 600 AND DD_AMT < 800 THEN '4.600-800'
-       WHEN DD_AMT >= 800 AND DD_AMT < 1000 THEN '5.800-1000'
-       WHEN DD_AMT >= 1000 THEN '6.>=1000'
-       WHEN DD_AMT > 0 AND DD_AMT < 200 THEN '1.<200'
-       --ELSE '1.<200'
-       ELSE '0.NonDDer'
-       END) AS DD_AMT_BIN
-  */
     (CASE WHEN DD_AMT >= 200 THEN '2.>=200'
        WHEN DD_AMT >= 10 AND DD_AMT < 200 THEN '1.10-200'
        --ELSE '1.<200'
@@ -387,7 +219,6 @@ SELECT USER_ID
   s2.socure_phone_risk_score,
   s2.socure_address_risk_score,
   A.AUTHORIZATION_CODE
-
 
   FROM
     (SELECT *,
@@ -410,8 +241,8 @@ SELECT USER_ID
      FROM ANALYTICS.LOOKER.TRANSACTIONS) AS A
   LEFT JOIN WEEKS_DATES AS C
   ON TO_DATE(A.TRANSACTION_TIMESTAMP)=C.TRANS_DATE
-  LEFT JOIN DATES_REAL_NEW_TIER_CHANGE D
-  ON A.USER_ID = D.USER_ID
+  LEFT JOIN REST.TEST.TRANSACTIONS_TIERS_MAPPING_0411 D
+  ON A.id = D.TRXN_ID
   LEFT JOIN (SELECT DISTINCT A.USER_ID, B.TRANSACTION_ID, A.REASON
              FROM ANALYTICS.LOOKER.USER_DISPUTE_CLAIMS AS A
              LEFT JOIN ANALYTICS.LOOKER.USER_DISPUTE_CLAIM_TRANSACTIONS AS B
@@ -428,7 +259,7 @@ SELECT USER_ID
   ON A.USER_ID = S1.USER_ID
   LEFT JOIN socure_score_contact S2
   ON A.USER_ID = S2.USER_ID
-  WHERE (TO_DATE(A.TRANSACTION_TIMESTAMP)>='2020-07-01'))
+  WHERE (TO_DATE(A.TRANSACTION_TIMESTAMP)>='2020-01-01'))
     --AND (TO_DATE(A.TRANSACTION_TIMESTAMP)< '2021-02-01')
     --AND DATEDIFF(WEEK, A.TRANSACTION_TIMESTAMP, CURRENT_DATE()) >= 1
     --AND A.TYPE_OF_TRXN IN ('ATM Withdrawals', 'Credit Purchase', 'Debit Purchase', 'ACH Push', 'ACH Pull'))
@@ -438,4 +269,68 @@ SELECT * FROM ALL_TRANS
  --WHERE TYPE_OF_TRXN IN ('ATM Withdrawals')
 );
 
+-- temp table 2: simulate the declines should tier 1 upgrade to tier 2
+-- part 1: debit
+create or replace table rest.test.debit_still_decline_with_tier2_0414 as
+(
+  with distinct_daily_declines as 
+  ( select distinct TO_DATE(TRANSACTION_TIMESTAMP) AS TXN_DATE,
+          USER_ID,
+          authorization_amount, 
+          MERCHANT_CATEGORY_CODE,
+          merchant_number,
+          CASE WHEN A.UNIQUE_PROGRAM_ID IN (600, 278, 1014) THEN 'Credit Purchase'
+           WHEN A.MERCHANT_CATEGORY_CODE IN (6010, 6011) THEN 'ATM Withdrawals'
+           ELSE 'Debit Purchase'
+          END AS TYPE_OF_TRXN
+   FROM mysql_db.galileo.galileo_authorized_transactions A
+   WHERE AUTHORIZATION_RESPONSE = 61 AND TYPE_OF_TRXN = 'Debit Purchase'
+   AND TRANSACTION_TIMESTAMP >= '2020-07-01'
+  )
+  , total_daily_declines_more_than_2500 as
+  ( select txn_date
+   , user_id
+   , sum(authorization_amount) as total_declined_amount
+   from distinct_daily_declines
+  group by 1, 2
+  having total_declined_amount < -2500
+  )
+  select  
+  distinct TO_CHAR(DATE_TRUNC('month', TXN_DATE), 'YYYY-MM') AS mth,
+  user_id
+  from total_daily_declines_more_than_2500
+);
 
+-- part 2: ATM
+create or replace table rest.test.atm_still_decline_with_tier2_0414 as
+(
+  with distinct_daily_declines as 
+  ( select distinct TO_DATE(TRANSACTION_TIMESTAMP) AS TXN_DATE,
+          USER_ID,
+          authorization_amount, 
+          MERCHANT_CATEGORY_CODE,
+          merchant_number,
+          CASE WHEN A.UNIQUE_PROGRAM_ID IN (600, 278, 1014) THEN 'Credit Purchase'
+           WHEN A.MERCHANT_CATEGORY_CODE IN (6010, 6011) THEN 'ATM Withdrawals'
+           ELSE 'Debit Purchase'
+          END AS TYPE_OF_TRXN
+   FROM mysql_db.galileo.galileo_authorized_transactions A
+   WHERE AUTHORIZATION_RESPONSE = 61 AND TYPE_OF_TRXN = 'ATM Withdrawals'
+   AND TRANSACTION_TIMESTAMP >= '2020-07-01'
+  )
+  , total_daily_declines_more_than_2500 as
+  ( select txn_date
+   , user_id
+   , sum(authorization_amount) as total_declined_amount
+   from distinct_daily_declines
+  group by 1, 2
+  having total_declined_amount < -500
+  )
+  select  
+  distinct TO_CHAR(DATE_TRUNC('month', TXN_DATE), 'YYYY-MM') AS mth,
+  user_id
+  from total_daily_declines_more_than_2500
+);
+
+-- phone number temp table can be found in 4001
+-- if updates needed just put refresh the query there

@@ -48,3 +48,4 @@ Starting from 0, gradually learning the query logic used at Chime\
 
 ## Limits analysis
 5001 Limits_Presentation.sql: documented the queries I used to update page 10 and 15 of the [presentaion](https://docs.google.com/presentation/d/1FovHs6LSREvmq-a0UVUwwIP77z2ocbWe2YlS7CBsjg4/edit#slide=id.g62bd80da81_0_529) <br/>
+5002 Limits_Feature_Research_Analysis.sql: documented the queries used for feature analysis [feature analysis](https://docs.google.com/document/d/1Dcj97uDBjBn-N6Ybf0YCMyWhvETEX3c7jJKSEkw4BmU/edit#heading=h.5ws9etdhs4mi) with all the intermediate temp table queries. Results summarized in the slide [P0 analysis](https://docs.google.com/presentation/d/1tsdNx17c4Ta5AZaCaVK6xpC01LGoH0toyEQr-xhgAeA/edit#slide=id.gc4f7623fb2_0_0) <br/>
