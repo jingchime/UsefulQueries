@@ -1,6 +1,7 @@
 
--- update on May 3rd:
+-- update on May 10th:
 -- Removing the GPT table. Only use user_adjustment table
+-- add bank program Stride
 WITH score as (select 
 to_date(api.created_at) as created_on,
 api.user_id as member_id
@@ -39,8 +40,7 @@ DATE_TRUNC('day', t2.CREATED_AT)::DATE as transaction_day,
 member.enrollment_date,
 score.sigma_v1,
 score.sigma_v2,
-users.socure_enrollment_score,
-bank.bank_name
+users.socure_enrollment_score
 FROM  
 (select distinct ID, user_id, CREATED_AT, ADJUSTMENT_TRANSACTION_ID, amount from "MYSQL_DB"."CHIME_PROD"."USER_ADJUSTMENTS" where type = 'external_card_chargeback') t
 left join "MYSQL_DB"."CHIME_PROD"."USER_ADJUSTMENTS" t2
@@ -48,8 +48,8 @@ on t2.RELATED_USER_ADJUSTMENT_ID = t.id
 left join analytics.looker.member_acquisition_facts member on t.user_id = member.user_id
 left join score on score.member_id = t.user_id
 left join mysql_db.chime_prod.users users on users.id = t.user_id
-LEFT JOIN MYSQL_DB.CHIME_PROD.ACH_ACCOUNTS bank on t.user_id = bank.user_id
-WHERE DATE_TRUNC('month', t.CREATED_AT)::DATE = '2021-04-01';  -- chargeback month
+LEFT JOIN "ANALYTICS"."LOOKER"."MEMBER_PARTNER_BANK" bank on t.user_id = bank.user_id
+WHERE DATE_TRUNC('month', t.CREATED_AT)::DATE = '2021-04-01' and bank.PRIMARY_PROGRAM_ASSIGNED = 'stride' ; 
 
 
 
