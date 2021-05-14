@@ -20,7 +20,9 @@ Starting from 0, gradually learning the query logic used at Chime\
 2009 Transaction_Type.sql: Bin shared the logic to get the transaction type from ANALYTICS.LOOKER."TRANSACTIONS" \
 2010 Dispute_Indicator.sql: Shu shared the logic to tag the dispute\
 2011 Real_time_available_funds.sql: Shu shared the logic, built to support analysis for [disputes capped by limits](https://docs.google.com/spreadsheets/d/1HtIoJrf7BqJE6URUcX6YL4vc4eTILmg4sSrQfD2FjPU/edit?ts=606519e4#gid=0)<br>
-2012 Simulate_Tiers_Across_Time.sql: Shu's logic to build the table of simulated tiers for analysis
+2012 Simulate_Tiers_Across_Time.sql: Shu's logic to build the table of simulated tiers for analysis\
+2013 Pay_friends_pay_anyone_declined.sql: Urvi's logic to get the declined PA PF timestamp\
+2014 ACH_transfer_ato.sql: Nik shared the query to identify the ato in ACH transfers and evaluate the rule impact
 
 ## Instant Transfer
 3001 Instant_Transfer_Main_Tables.sql: key tables for updating and analyzing instant transfer\
@@ -47,7 +49,8 @@ Starting from 0, gradually learning the query logic used at Chime\
 4015 Member_Status.sql: find the members who are suspended or cancelled (not member initiated) and exclude them from analysis\
 4016 ACH_Pull_Days_Distribution.sql: get the distribution of proceed/return ACH pull transfers. The excel file is [Excel data](https://docs.google.com/spreadsheets/d/1d3c-1-1ftpTCODh4Azn4SaD6wyXD5Hp1HZ--xIJ2rbs/edit#gid=1794551769) and the document is [doc](https://docs.google.com/document/d/1780t_rL93RK0Ro9o-G1IpI8dsKko1dqeI5t0sClMT-s/edit) <br/>
 4017 Validate_VISA_Chargebacks.sql: Used to compare our GPT result with Andrew's result and identified the reason why there is a discrepancy: suspended accounts don't have chargebacks. Solution: user_adjustment\
-4018 Representment_analysis.sql: documented the codes behind the hex file comparing representment between Tabapay and user_adjustment [Hex analysis](https://chime.hex.tech/global/hex/9f04aefd-98d9-4fbd-8ac2-4193f3353eb4/draft/logic/47d1dedb-feec-4700-b293-3adcacb787c4)
+4018 Representment_analysis.sql: documented the codes behind the hex file comparing representment between Tabapay and user_adjustment [Hex analysis](https://chime.hex.tech/global/hex/9f04aefd-98d9-4fbd-8ac2-4193f3353eb4/draft/logic/47d1dedb-feec-4700-b293-3adcacb787c4) <br/>
+4019 ACH_transfer_ATO_add_flag_declined_papf.sql: support Nik's analysis on [RI-448](https://docs.google.com/document/d/1JjCgrURwWfr8Q8XpT_6HMX9ZnXr07aH6lG8aOgBrK30/edit?ts=609d6280). Added previous declined timestamp as flag to Nik's original [query](https://chime.looker.com/sql/2kmhhzdsjtrbby?toggle=dat,sql) <br/>
 
 ## Limits analysis
 5001 Limits_Presentation.sql: documented the queries I used to update page 10 and 15 of the [presentaion](https://docs.google.com/presentation/d/1FovHs6LSREvmq-a0UVUwwIP77z2ocbWe2YlS7CBsjg4/edit#slide=id.g62bd80da81_0_529) <br/>
