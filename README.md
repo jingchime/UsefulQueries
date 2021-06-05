@@ -48,13 +48,10 @@ Starting from 0, gradually learning the query logic used at Chime\
 4013 Debit_Purchase_Amount_Tracker.sql: cumulatively track total debit purchase amount in the last 1,3,6 months\
 4014 Virtual_Card_Transactions.sql: used for the virtual card transaction analysis [doc](https://docs.google.com/document/d/1Hcpq5Aqgc7H6Bu9IeU7xdisCySX5qHez1MrewomBzs0/edit#heading=h.75r11l61c0on) <br/>
 4015 Member_Status.sql: find the members who are suspended or cancelled (not member initiated) and exclude them from analysis\
-
-4017 Validate_VISA_Chargebacks.sql: Used to compare our GPT result with Andrew's result and identified the reason why there is a discrepancy: suspended accounts don't have chargebacks. Solution: user_adjustment\
+4016 Validate_VISA_Chargebacks.sql: Used to compare our GPT result with Andrew's result and identified the reason why there is a discrepancy: suspended accounts don't have chargebacks. Solution: user_adjustment\
+4017 Suspended_re_enablement_analysis.sql: this code is used to calculate the [requests for tier 0 analysis](https://docs.google.com/document/d/19e1BmM8em2lohaMSad_E2PS3RVP3q_bAP-xABC1mFcw/edit) <br/>
 4018 Representment_analysis.sql: documented the codes behind the hex file comparing representment between Tabapay and user_adjustment [Hex analysis](https://chime.hex.tech/global/hex/9f04aefd-98d9-4fbd-8ac2-4193f3353eb4/draft/logic/47d1dedb-feec-4700-b293-3adcacb787c4) <br/>
-4019 ACH_transfer_ATO_add_flag_declined_papf.sql: support Nik's analysis on [RI-448](https://docs.google.com/document/d/1JjCgrURwWfr8Q8XpT_6HMX9ZnXr07aH6lG8aOgBrK30/edit?ts=609d6280). Added previous declined timestamp as flag to Nik's original [query](https://chime.looker.com/sql/2kmhhzdsjtrbby?toggle=dat,sql) <br/>
-4020 Suspended_re_enablement_analysis.sql: this code is used to calculate the [requests for tier 0 analysis](https://docs.google.com/document/d/19e1BmM8em2lohaMSad_E2PS3RVP3q_bAP-xABC1mFcw/edit) <br/>
-4021 ACH Fail and return.sql: the code is used for calculating [ACH fail/return distribution](https://docs.google.com/spreadsheets/d/1skk_P7Wl42DomvesMshDhGgAm-VT-zc89_SRo-vWYaw/edit#gid=478155585) <br/>
-4022 Followup_4020_7th_code_to_suspend.sql: follow up on tier 0 analysis to add a new code (previously didn't suspend) to suspend those who transfer >= 7500 PMVT in the previous 30 days. Size the impact.
+4019 Followup_417_7th_code_to_suspend.sql: follow up on tier 0 analysis to add a new code (previously didn't suspend) to suspend those who transfer >= 7500 PMVT in the previous 30 days. Size the impact.
 
 ## Limits analysis
 5001 Limits_Presentation.sql: documented the queries I used to update page 10 and 15 of the [presentaion](https://docs.google.com/presentation/d/1FovHs6LSREvmq-a0UVUwwIP77z2ocbWe2YlS7CBsjg4/edit#slide=id.g62bd80da81_0_529) <br/>
@@ -65,3 +62,5 @@ Starting from 0, gradually learning the query logic used at Chime\
 
 ## ACH analysis
 6001 ACH_Pull_Days_Distribution.sql: get the distribution of proceed/return ACH pull transfers. The excel file is [Excel data](https://docs.google.com/spreadsheets/d/1d3c-1-1ftpTCODh4Azn4SaD6wyXD5Hp1HZ--xIJ2rbs/edit#gid=1794551769) and the document is [doc](https://docs.google.com/document/d/1780t_rL93RK0Ro9o-G1IpI8dsKko1dqeI5t0sClMT-s/edit) <br/>
+6002 ACH_transfer_ATO_add_flag_declined_papf.sql: support Nik's analysis on [RI-448](https://docs.google.com/document/d/1JjCgrURwWfr8Q8XpT_6HMX9ZnXr07aH6lG8aOgBrK30/edit?ts=609d6280). Added previous declined timestamp as flag to Nik's original [query](https://chime.looker.com/sql/2kmhhzdsjtrbby?toggle=dat,sql) <br/>
+6003 ACH Fail and return.sql: the code is used for calculating [ACH fail/return distribution](https://docs.google.com/spreadsheets/d/1skk_P7Wl42DomvesMshDhGgAm-VT-zc89_SRo-vWYaw/edit#gid=478155585) <br/>
