@@ -63,4 +63,5 @@ Starting from 0, gradually learning the query logic used at Chime\
 ## ACH analysis
 6001 ACH_Pull_Days_Distribution.sql: get the distribution of proceed/return ACH pull transfers. The excel file is [Excel data](https://docs.google.com/spreadsheets/d/1d3c-1-1ftpTCODh4Azn4SaD6wyXD5Hp1HZ--xIJ2rbs/edit#gid=1794551769) and the document is [doc](https://docs.google.com/document/d/1780t_rL93RK0Ro9o-G1IpI8dsKko1dqeI5t0sClMT-s/edit) <br/>
 6002 ACH_transfer_ATO_add_flag_declined_papf.sql: support Nik's analysis on [RI-448](https://docs.google.com/document/d/1JjCgrURwWfr8Q8XpT_6HMX9ZnXr07aH6lG8aOgBrK30/edit?ts=609d6280). Added previous declined timestamp as flag to Nik's original [query](https://chime.looker.com/sql/2kmhhzdsjtrbby?toggle=dat,sql) <br/>
-6003 ACH Fail and return.sql: the code is used for calculating [ACH fail/return distribution](https://docs.google.com/spreadsheets/d/1skk_P7Wl42DomvesMshDhGgAm-VT-zc89_SRo-vWYaw/edit#gid=478155585) <br/>
+6003 ACH_Fail_and_return.sql: the code is used for calculating [ACH fail/return distribution](https://docs.google.com/spreadsheets/d/1skk_P7Wl42DomvesMshDhGgAm-VT-zc89_SRo-vWYaw/edit#gid=478155585) <br/>
+6004 ACH_fail_and_return_followup.sql: follow up the 6003 analysis by adding the segmentation to the ACH returns" [analysis](https://docs.google.com/document/d/1tIrtNzjw_NPbDgFoWI7nixJWp2nxuSk4JQdmXhd6vTY/edit)<br/>
