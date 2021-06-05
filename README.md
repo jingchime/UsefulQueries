@@ -51,7 +51,7 @@ Starting from 0, gradually learning the query logic used at Chime\
 4016 Validate_VISA_Chargebacks.sql: Used to compare our GPT result with Andrew's result and identified the reason why there is a discrepancy: suspended accounts don't have chargebacks. Solution: user_adjustment\
 4017 Suspended_re_enablement_analysis.sql: this code is used to calculate the [requests for tier 0 analysis](https://docs.google.com/document/d/19e1BmM8em2lohaMSad_E2PS3RVP3q_bAP-xABC1mFcw/edit) <br/>
 4018 Representment_analysis.sql: documented the codes behind the hex file comparing representment between Tabapay and user_adjustment [Hex analysis](https://chime.hex.tech/global/hex/9f04aefd-98d9-4fbd-8ac2-4193f3353eb4/draft/logic/47d1dedb-feec-4700-b293-3adcacb787c4) <br/>
-4019 Followup_417_7th_code_to_suspend.sql: follow up on tier 0 analysis to add a new code (previously didn't suspend) to suspend those who transfer >= 7500 PMVT in the previous 30 days. Size the impact.
+4019 Followup_4017_7th_code_to_suspend.sql: follow up on tier 0 analysis to add a new code (previously didn't suspend) to suspend those who transfer >= 7500 PMVT in the previous 30 days. Size the impact.
 
 ## Limits analysis
 5001 Limits_Presentation.sql: documented the queries I used to update page 10 and 15 of the [presentaion](https://docs.google.com/presentation/d/1FovHs6LSREvmq-a0UVUwwIP77z2ocbWe2YlS7CBsjg4/edit#slide=id.g62bd80da81_0_529) <br/>
