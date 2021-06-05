@@ -48,7 +48,7 @@ Starting from 0, gradually learning the query logic used at Chime\
 4013 Debit_Purchase_Amount_Tracker.sql: cumulatively track total debit purchase amount in the last 1,3,6 months\
 4014 Virtual_Card_Transactions.sql: used for the virtual card transaction analysis [doc](https://docs.google.com/document/d/1Hcpq5Aqgc7H6Bu9IeU7xdisCySX5qHez1MrewomBzs0/edit#heading=h.75r11l61c0on) <br/>
 4015 Member_Status.sql: find the members who are suspended or cancelled (not member initiated) and exclude them from analysis\
-4016 ACH_Pull_Days_Distribution.sql: get the distribution of proceed/return ACH pull transfers. The excel file is [Excel data](https://docs.google.com/spreadsheets/d/1d3c-1-1ftpTCODh4Azn4SaD6wyXD5Hp1HZ--xIJ2rbs/edit#gid=1794551769) and the document is [doc](https://docs.google.com/document/d/1780t_rL93RK0Ro9o-G1IpI8dsKko1dqeI5t0sClMT-s/edit) <br/>
+
 4017 Validate_VISA_Chargebacks.sql: Used to compare our GPT result with Andrew's result and identified the reason why there is a discrepancy: suspended accounts don't have chargebacks. Solution: user_adjustment\
 4018 Representment_analysis.sql: documented the codes behind the hex file comparing representment between Tabapay and user_adjustment [Hex analysis](https://chime.hex.tech/global/hex/9f04aefd-98d9-4fbd-8ac2-4193f3353eb4/draft/logic/47d1dedb-feec-4700-b293-3adcacb787c4) <br/>
 4019 ACH_transfer_ATO_add_flag_declined_papf.sql: support Nik's analysis on [RI-448](https://docs.google.com/document/d/1JjCgrURwWfr8Q8XpT_6HMX9ZnXr07aH6lG8aOgBrK30/edit?ts=609d6280). Added previous declined timestamp as flag to Nik's original [query](https://chime.looker.com/sql/2kmhhzdsjtrbby?toggle=dat,sql) <br/>
@@ -63,3 +63,5 @@ Starting from 0, gradually learning the query logic used at Chime\
 5004 Walmart Cash Back Analysis.sql: This is the code supporting [Walmart analysis](https://docs.google.com/document/d/1I156jt55ggvJbp2MuNnvLTjxWKCk1_S4McjGhLUuGsk/edit) <br/>
 5005 Avg_transaction_size_before_after_tier_change.sql: used to update the user level spend change before and after tier change. [excel](https://docs.google.com/spreadsheets/d/1K9YfpAQv8JiPUmaA4p3yonBm0gyy8BmlX45decIvwJ8/edit#gid=102292978&fvid=1813606055) [slides](https://docs.google.com/presentation/d/1GI4Vq0qCERBDJPipcybyVrIZ7axtHaT5oi62K_3ikVY/edit#slide=id.gd45a0a7a43_0_11) <br/>
 
+## ACH analysis
+6001 ACH_Pull_Days_Distribution.sql: get the distribution of proceed/return ACH pull transfers. The excel file is [Excel data](https://docs.google.com/spreadsheets/d/1d3c-1-1ftpTCODh4Azn4SaD6wyXD5Hp1HZ--xIJ2rbs/edit#gid=1794551769) and the document is [doc](https://docs.google.com/document/d/1780t_rL93RK0Ro9o-G1IpI8dsKko1dqeI5t0sClMT-s/edit) <br/>
