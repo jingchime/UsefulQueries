@@ -21,6 +21,11 @@
         when close_code in (321, 362) then 'merchant_credit'
         when close_code in (320, 327) then 'unknown'
         else 'null' end as close_code_grp_updated      -- updated with information Tucker and Nik shared
+  , when close_code in (300, 301, 302, 303, 307, 357, 361, 363, 340) then 'approved'
+    when close_code in (321, 362) then 'merchant_credit'
+    when close_code in (322, 326, 356, 367) then 'cancelled/withdrawn/deleted'
+    when close_code in (325, 350, 353, 354, 366) then 'denied' 
+    when close_code in (320, 327, 364, 365) then 'unknown' -- updated with Hemali's research on 4/26 in REST team chat
   , case when close_code = '' then null
         when close_code in (300, 301, 302, 307, 357, 361, 363, 365) then udcu.transaction_amount ELSE null END AS udcu_loss_from_disputes
   , case when close_code = '' then null when close_code in (322, 326, 356, 367) then udcu.transaction_amount ELSE null END AS udcu_cancelled
