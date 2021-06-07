@@ -23,7 +23,8 @@ Starting from 0, gradually learning the query logic used at Chime\
 2012 Simulate_Tiers_Across_Time.sql: Shu's logic to build the table of simulated tiers for analysis\
 2013 Pay_friends_pay_anyone_declined.sql: Urvi's logic to get the declined PA PF timestamp\
 2014 ACH_transfer_ato.sql: Nik shared the query to identify the ato in ACH transfers and evaluate the rule impact\
-2015 PF_decline_dispute_by_tier: Urvi used the query to generate PF decline and dispute rate by tiers\
+2015 PF_decline_dispute_by_tier.sql: Urvi used the query to generate PF decline and dispute rate by tiers\
+2016 Outbound_PA_instant_transfer_monitoring.sql: Urvi used the query to monitor the outbound test performance 
 
 ## Instant Transfer
 3001 Instant_Transfer_Main_Tables.sql: key tables for updating and analyzing instant transfer\
