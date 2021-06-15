@@ -68,3 +68,4 @@ Starting from 0, gradually learning the query logic used at Chime\
 6003 ACH_Fail_and_return.sql: the code is used for calculating [ACH fail/return distribution](https://docs.google.com/spreadsheets/d/1skk_P7Wl42DomvesMshDhGgAm-VT-zc89_SRo-vWYaw/edit#gid=478155585) <br/>
 6004 ACH_fail_and_return_followup.sql: follow up the 6003 analysis by adding the segmentation to the ACH returns" [analysis](https://docs.google.com/document/d/1tIrtNzjw_NPbDgFoWI7nixJWp2nxuSk4JQdmXhd6vTY/edit)<br/>
 6005 Evaluate_individual_plaid_score.sql: evaluate the performance of plaid scores in predicting ACH returns. [gsheet](https://docs.google.com/spreadsheets/d/1r62ByeNoaKuZD8b0bpGomXQl64W5_M_T30Ns1rIif54/edit#gid=1768211984) <br/>
+6006 Deep_dive_BI_CI_days_to_return.sql: deep dive into BI score by evaluating the possibility of reducing hold time. [gsheet](https://docs.google.com/spreadsheets/d/11-qZfY8V-_gxSZ0t6f_yTVIuwkSPWbLETZQPdItYUe4/edit#gid=158792646)<br/>
