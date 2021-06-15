@@ -32,7 +32,8 @@ Starting from 0, gradually learning the query logic used at Chime\
 3002 Update_Weekly_IT_Meeting.sql: used to update weekly monitoring the blocked banks\
 3003 Update_Chargeback_by_Bank.sql: used to monitor the chargeback by bank to give alerts\
 3004 Instant_Transfer_Chargeback_Weekly.sql: used to update overall instant transfer chargebacks (both cash and cohort) by week\
-3005 Update_Overall_Chargeback_User_Adjustment.sql: refresh the monitoring logic using user_adjustment table instead of GPT table as GPT missed those who suspended.
+3005 Update_Overall_Chargeback_User_Adjustment.sql: refresh the monitoring logic using user_adjustment table instead of GPT table as GPT missed those who suspended\
+3006 Evaluate_instant_transfer_risk_controls_effectiveness.sql: evaluated the performance of risk controls using [confusion matrix](https://docs.google.com/spreadsheets/d/1GbQUbFnQ8CozVso2p2TVF9AQRTw6bL8B1jbi_DQAdFY/edit#gid=1396155568) <br\>
 
 ## Ad-hoc queries
 4001 Phone_number_change_cumulative_tracker.sql: cumulatively track phone number change in the last 32 days\
