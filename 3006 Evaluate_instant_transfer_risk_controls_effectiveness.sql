@@ -1,3 +1,64 @@
+------ latest query on June 22nd
+-- changed to either name OR address match
+
+with score as (
+select 
+api.user_id 
+--new sigma_v2
+, case when parse_json(result):fraud:scores[0]:name = 'sigma' and  parse_json(result):fraud:scores[0]:version = '1.0' then parse_json(result):fraud:scores[0]:score
+       when parse_json(result):fraud:scores[1]:name = 'sigma' and  parse_json(result):fraud:scores[1]:version = '1.0' then parse_json(result):fraud:scores[1]:score
+       when parse_json(result):fraud:scores[2]:name = 'sigma' and  parse_json(result):fraud:scores[2]:version = '1.0' then parse_json(result):fraud:scores[2]:score
+       else null
+       end as sigma_v1  
+, case when parse_json(result):fraud:scores[0]:name = 'sigma' and  parse_json(result):fraud:scores[0]:version = '2.0' then parse_json(result):fraud:scores[0]:score
+       when parse_json(result):fraud:scores[1]:name = 'sigma' and  parse_json(result):fraud:scores[1]:version = '2.0' then parse_json(result):fraud:scores[1]:score
+       when parse_json(result):fraud:scores[2]:name = 'sigma' and  parse_json(result):fraud:scores[2]:version = '2.0' then parse_json(result):fraud:scores[2]:score
+       else null
+       end as sigma_v2  
+, row_number() over(partition by api.user_id order by api.created_at asc) as rnum
+from mysql_db.chime_prod.external_api_requests api
+where 1=1
+and api.service='socure3' 
+and  CHECK_JSON(api.result) is null 
+and api.created_at >= '2020-07-01' 
+qualify rnum=1)
+
+SELECT 
+DATE_TRUNC('day', CREATED_AT)::DATE AS transaction_day,
+DATE_TRUNC('quarter', CREATED_AT)::DATE AS transaction_quarter,
+t1.user_id,
+amount,
+CASE WHEN cb_user.user_id IS NOT NULL then 1 else 0 end as if_chargedback,
+score.sigma_v1,
+score.sigma_v2,
+case when validated.user_id is not null then 1 else 0 end as if_name_address_matched,
+to_date(validated.validation_date) as validation_day,
+case when to_date(validated.validation_date)<= transaction_day then 1 else 0 end as if_name_address_matched_at_time_of_transaction,
+case when to_date(name_match.validation_date)<= transaction_day then 1 else 0 end as if_name_matched_at_time_of_transaction,
+case when to_date(address_match.validation_date)<= transaction_day then 1 else 0 end as if_address_matched_at_time_of_transaction
+
+FROM "MYSQL_DB"."CHIME_PROD"."USER_ADJUSTMENTS" t1
+LEFT JOIN (select distinct user_id
+            from  "MYSQL_DB"."CHIME_PROD"."USER_ADJUSTMENTS" 
+            where TYPE = 'external_card_chargeback') cb_user
+ON t1.user_id = cb_user.user_id
+left join score 
+on t1.user_id = score.user_id
+left join (select user_id, min(created_at) as validation_date from mysql_db.chime_prod.ach_accounts where transfer_direction = 'both' OR transfer_direction = 'out' or ADDRESS_MATCHED = 1 OR NAME_MATCHED = 1 group by 1) as validated 
+on t1.user_id = validated.user_id
+left join (select user_id, min(created_at) as validation_date from mysql_db.chime_prod.ach_accounts where transfer_direction = 'both'  OR NAME_MATCHED = 1 group by 1) as name_match 
+on t1.user_id = name_match.user_id
+left join (select user_id, min(created_at) as validation_date from mysql_db.chime_prod.ach_accounts where transfer_direction = 'both'  OR ADDRESS_MATCHED = 1 group by 1) as address_match 
+on t1.user_id = address_match.user_id
+WHERE CREATED_AT  >= TO_TIMESTAMP('2020-10-26') 
+       and TYPE = 'external_card_transfer'
+;
+
+
+------ the one below is abondoned -----------
+------ after talking the sergey the logic for name address match is OR logic, not and
+------ So added OR 'OUT' in the logic
+------ in addition, added name_match address_match to the criteria
 with score as (
 select 
 api.user_id 
