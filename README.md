@@ -33,7 +33,7 @@ Starting from 0, gradually learning the query logic used at Chime\
 3003 Update_Chargeback_by_Bank.sql: used to monitor the chargeback by bank to give alerts\
 3004 Instant_Transfer_Chargeback_Weekly.sql: used to update overall instant transfer chargebacks (both cash and cohort) by week\
 3005 Update_Overall_Chargeback_User_Adjustment.sql: refresh the monitoring logic using user_adjustment table instead of GPT table as GPT missed those who suspended\
-3006 Evaluate_instant_transfer_risk_controls_effectiveness.sql: evaluated the performance of risk controls using [confusion matrix](https://docs.google.com/spreadsheets/d/1GbQUbFnQ8CozVso2p2TVF9AQRTw6bL8B1jbi_DQAdFY/edit#gid=1396155568) <br\>
+3006 Evaluate_instant_transfer_risk_controls_effectiveness.sql: evaluated the performance of risk controls using [confusion matrix](https://docs.google.com/spreadsheets/d/1GbQUbFnQ8CozVso2p2TVF9AQRTw6bL8B1jbi_DQAdFY/edit#gid=1396155568)
 
 ## Ad-hoc queries
 4001 Phone_number_change_cumulative_tracker.sql: cumulatively track phone number change in the last 32 days\
@@ -70,4 +70,4 @@ Starting from 0, gradually learning the query logic used at Chime\
 6004 ACH_fail_and_return_followup.sql: follow up the 6003 analysis by adding the segmentation to the ACH returns" [analysis](https://docs.google.com/document/d/1tIrtNzjw_NPbDgFoWI7nixJWp2nxuSk4JQdmXhd6vTY/edit)<br/>
 6005 Evaluate_individual_plaid_score.sql: evaluate the performance of plaid scores in predicting ACH returns. [gsheet](https://docs.google.com/spreadsheets/d/1r62ByeNoaKuZD8b0bpGomXQl64W5_M_T30Ns1rIif54/edit#gid=1768211984) <br/>
 6006 Deep_dive_BI_CI_days_to_return.sql: deep dive into BI score by evaluating the possibility of reducing hold time. [gsheet](https://docs.google.com/spreadsheets/d/11-qZfY8V-_gxSZ0t6f_yTVIuwkSPWbLETZQPdItYUe4/edit#gid=158792646)<br/>
-6007 Evaluate_ACH_pull_risk_controls_effectiveness.sql: following 3006, do the same thing for ACH to check the fail rate. Result in local folder 29 v3/
+6007 Evaluate_ACH_pull_risk_controls_effectiveness.sql: following 3006, do the same thing for ACH to check the fail rate. Result in local folder 29 v3
