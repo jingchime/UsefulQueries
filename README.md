@@ -56,7 +56,8 @@ Starting from 0, gradually learning the query logic used at Chime\
 4018 Representment_analysis.sql: documented the codes behind the hex file comparing representment between Tabapay and user_adjustment [Hex analysis](https://chime.hex.tech/global/hex/9f04aefd-98d9-4fbd-8ac2-4193f3353eb4/draft/logic/47d1dedb-feec-4700-b293-3adcacb787c4) <br/>
 4019 Followup_4017_7th_code_to_suspend.sql: follow up on 4017 tier 0 analysis to add a new code (previously didn't suspend) to suspend those who transfer >= 7500 PMVT in the previous 30 days. Size the impact\
 4020 Compare_dispute_rate_of_transactions_within_24h_instant_transfer_with_portfolio.sql: compared the debit purchases dispute rates of transactions made within 24 hours after incoming instant transfers with the portfolio. [gsheet](https://docs.google.com/spreadsheets/d/1m5Scz9lT68RbgLVBmgT3IRwXSpFoj9KGLK8XVCZN_k4/edit#gid=343122903) <br/>
-4021 Tabapay_AVS_declines_deep_dive.sql: checked the performance of tabapay avs declines. results in local folder 29. shared version is [gsheet](https://docs.google.com/spreadsheets/d/16Rda5cMBciMBybeRU4m7EY49Pj0djj_i3BFbFaqc4Pk/edit#gid=1015229486)
+4021 Tabapay_AVS_declines_deep_dive.sql: checked the performance of tabapay avs declines. results in local folder 29. shared version is [gsheet](https://docs.google.com/spreadsheets/d/16Rda5cMBciMBybeRU4m7EY49Pj0djj_i3BFbFaqc4Pk/edit#gid=1015229486)<br/>
+4022 Investigate_Sev_367_pav2_bug_loss_impact.sql: query used to track the 1.3M loss from sev 367 bug. [loss file](https://docs.google.com/spreadsheets/d/1XeOf-u13yvPj5WdT0t1Oc0Kadb4NZSLNSLb0RK_JTbE/edit?ts=60de28df#gid=597101487)
 
 
 ## Limits analysis
