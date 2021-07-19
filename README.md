@@ -9,7 +9,7 @@ Starting from 0, gradually learning the query logic used at Chime\
 1004 From_Looker_ATO.sql: this is the logic to know which transaction is ATO. It is shared by Bin extracted from the [dashboard](https://chime.looker.com/dashboards-next/1349)
 
 ## From teammembers
-2001 Seven_Scores.sql: Stuti shared all scores used at Chime\
+2001 Seven_Scores.sql: Stuti shared all scores used at Chime. Modified on Jul-19 to address new KYC table\
 2002 Dispute_Transaction_Close_Status: Hemali shared how to pull most recent status of dispute. Updated it with Rakesh and Shu based on several versions\
 2003 User_Update_Phone.sql: from data-ask channel get how to check if user update their phone or email\
 2004 Scan_ID.sql: from Karan get if the user went through scan ID and pass/fail/manual review\

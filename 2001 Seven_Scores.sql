@@ -1,3 +1,36 @@
+---- 2021/07/19 update
+---- new kyc table
+---- query needs to be modifed
+
+select user_id,result as api_result
+        , parse_json(result):emailRisk:score as email_risk
+        , case when parse_json(result):fraud:scores[0]:name = 'sigma' then parse_json(result):fraud:scores[0]:score
+             when parse_json(result):fraud:scores[1]:name = 'sigma' then parse_json(result):fraud:scores[1]:score
+             when parse_json(result):fraud:scores[2]:name = 'sigma' then parse_json(result):fraud:scores[2]:score
+             else null
+          end as sigma_generic_score     
+      , row_number() over(partition by api.user_id order by api.created_at asc) as rnum
+from mysql_db.chime_prod.external_api_requests api 
+where  service='socure3' 
+      and  CHECK_JSON(result) is null --checking for valid JSON's
+and api.created_at >= '2019-01-01' qualify rnum = 1
+
+UNION
+
+select DISTINCT user_id, raw_response as api_result,
+raw_response:emailRisk:score as email_risk,
+raw_response:fraud:scores[2]:score as sigma_generic_score,
+1 as rnum
+from POSTGRES_DB.KYC_SERVICE.decisions 
+join POSTGRES_DB.KYC_SERVICE.vendor_inquiries 
+on decisions.id = decision_id
+where vendor='socure' and client != 'credit_builder' ;
+
+
+
+----previous version
+----comprehensive but table is being abondoned
+
 with score as (select 
 to_date(api.created_at) as created_on,
 api.user_id as member_id,
